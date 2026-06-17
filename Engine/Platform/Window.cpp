@@ -179,11 +179,19 @@ void Window::PollEvents(rw::input::InputState& input)
         m_impl->open = false;
     }
 
+    input.SetKeyDown(rw::input::Key::One, (GetAsyncKeyState('1') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Two, (GetAsyncKeyState('2') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Three, (GetAsyncKeyState('3') & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::W, (GetAsyncKeyState('W') & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::A, (GetAsyncKeyState('A') & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::S, (GetAsyncKeyState('S') & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::D, (GetAsyncKeyState('D') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::B, (GetAsyncKeyState('B') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Q, (GetAsyncKeyState('Q') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::R, (GetAsyncKeyState('R') & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::E, (GetAsyncKeyState('E') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Enter, (GetAsyncKeyState(VK_RETURN) & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Backspace, (GetAsyncKeyState(VK_BACK) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::F1, (GetAsyncKeyState(VK_F1) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::F2, (GetAsyncKeyState(VK_F2) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::F3, (GetAsyncKeyState(VK_F3) & 0x8000) != 0);

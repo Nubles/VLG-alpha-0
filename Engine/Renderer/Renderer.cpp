@@ -36,6 +36,7 @@ void DrawCube(const rw::scene::SceneObject& object)
     const auto& s = object.transform.scale;
     glPushMatrix();
     glTranslatef(p.x, p.y, p.z);
+    glRotatef(object.transform.rotationEuler.y * 57.2957795F, 0.0F, 1.0F, 0.0F);
     glScalef(s.x, s.y, s.z);
     glColor3f(object.color.x, object.color.y, object.color.z);
 

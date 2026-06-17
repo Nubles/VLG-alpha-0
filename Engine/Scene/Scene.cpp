@@ -14,4 +14,9 @@ const std::vector<SceneObject>& Scene::Objects() const
     return m_objects;
 }
 
+std::vector<SceneObject>& Scene::MutableObjects()
+{
+    return m_objects;
+}
+
 } // namespace rw::scene

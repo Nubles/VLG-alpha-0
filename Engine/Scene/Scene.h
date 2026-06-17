@@ -23,6 +23,7 @@ class Scene {
 public:
     void AddObject(SceneObject object);
     const std::vector<SceneObject>& Objects() const;
+    std::vector<SceneObject>& MutableObjects();
 
 private:
     std::vector<SceneObject> m_objects;

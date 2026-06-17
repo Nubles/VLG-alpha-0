@@ -2,6 +2,8 @@
 
 #include "Engine/Core/GameLayer.h"
 #include "Engine/Scene/Scene.h"
+#include "Game/Source/Building/BuildableDatabase.h"
+#include "Game/Source/Building/BuildPlacementController.h"
 #include "Game/Source/Crafting/RecipeDatabase.h"
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
@@ -27,8 +29,12 @@ private:
     void UpdateInteractionTarget(const rw::input::InputState& input);
     void UpdateDebugItemGrants(const rw::input::InputState& input);
     void UpdateDebugCrafting(const rw::input::InputState& input);
+    void UpdateBuildPlacement(const rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
     void CraftDebugRecipe(const std::string& recipeId);
+    void SyncBuildPreview();
+    void AddPlacedBuildable(const PlacedBuildable& placed);
+    std::string SelectedBuildableName() const;
     void GatherTargetNode(GatherableNode& node);
     void AddGatherableNode(const GatherableNode& node, const rw::math::Vec3& color);
     std::string InventorySummary() const;
@@ -37,16 +43,20 @@ private:
     PlayerController m_player;
     ItemDatabase m_itemDatabase;
     RecipeDatabase m_recipeDatabase;
+    BuildableDatabase m_buildableDatabase;
+    BuildPlacementController m_buildPlacement;
     Inventory m_inventory;
     Hotbar m_hotbar;
     std::vector<Interactable> m_interactables;
     std::vector<GatherableNode> m_gatherableNodes;
+    std::vector<PlacedBuildable> m_placedBuildables;
     const Interactable* m_currentTarget = nullptr;
     int m_currentGatherableIndex = -1;
     std::string m_lastInteractionMessage;
     std::string m_lastInventoryMessage;
     std::string m_lastGatherMessage;
     std::string m_lastCraftMessage;
+    std::string m_lastBuildMessage;
 };
 
 } // namespace rw::game

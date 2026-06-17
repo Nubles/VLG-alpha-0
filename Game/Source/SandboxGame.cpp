@@ -12,6 +12,7 @@ namespace rw::game {
 SandboxGame::SandboxGame()
     : m_itemDatabase(ItemDatabase::CreateStarterDatabase())
     , m_recipeDatabase(RecipeDatabase::CreateStarterRecipes())
+    , m_buildableDatabase(BuildableDatabase::CreateStarterBuildables())
     , m_inventory(16)
     , m_hotbar(8)
 {
@@ -27,6 +28,12 @@ SandboxGame::SandboxGame()
     cube.transform.scale = { 1.5F, 1.5F, 1.5F };
     cube.color = { 0.25F, 0.72F, 0.95F };
     m_scene.AddObject(cube);
+
+    rw::scene::SceneObject buildPreview;
+    buildPreview.name = "Build Preview";
+    buildPreview.transform.scale = { 0.0F, 0.0F, 0.0F };
+    buildPreview.color = { 0.30F, 0.85F, 0.65F };
+    m_scene.AddObject(buildPreview);
 
     Interactable ancientStone;
     ancientStone.name = "Ancient Stone";
@@ -90,6 +97,7 @@ void SandboxGame::OnUpdate(float deltaSeconds, const rw::input::InputState& inpu
     UpdateInteractionTarget(input);
     UpdateDebugItemGrants(input);
     UpdateDebugCrafting(input);
+    UpdateBuildPlacement(input);
 }
 
 void SandboxGame::OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window)
@@ -102,6 +110,8 @@ std::string SandboxGame::DebugTitle() const
     std::ostringstream text;
     text << "health " << std::fixed << std::setprecision(0) << m_player.Vitals().Health()
          << " | stamina " << std::setprecision(0) << m_player.Vitals().Stamina()
+         << " | build " << (m_buildPlacement.BuildModeActive() ? "On" : "Off")
+         << " " << SelectedBuildableName()
          << " | target ";
 
     if (m_currentGatherableIndex >= 0) {
@@ -126,6 +136,10 @@ std::string SandboxGame::DebugTitle() const
 
     if (!m_lastCraftMessage.empty()) {
         text << " | " << m_lastCraftMessage;
+    }
+
+    if (!m_lastBuildMessage.empty()) {
+        text << " | " << m_lastBuildMessage;
     }
 
     return text.str();
@@ -219,6 +233,54 @@ void SandboxGame::UpdateDebugCrafting(const rw::input::InputState& input)
     }
 }
 
+void SandboxGame::UpdateBuildPlacement(const rw::input::InputState& input)
+{
+    if (input.WasKeyPressed(rw::input::Key::B)) {
+        m_buildPlacement.ToggleBuildMode();
+        m_lastBuildMessage = m_buildPlacement.BuildModeActive() ? "Build mode on" : "Build mode off";
+        rw::core::Logger::Info(m_lastBuildMessage);
+    }
+
+    if (input.WasKeyPressed(rw::input::Key::Backspace)) {
+        m_buildPlacement.CancelBuildMode();
+        m_lastBuildMessage = "Build mode cancelled";
+        rw::core::Logger::Info(m_lastBuildMessage);
+    }
+
+    if (input.WasKeyPressed(rw::input::Key::One)) {
+        m_buildPlacement.SelectBuildable("camp_marker");
+        m_lastBuildMessage = "Selected Camp Marker";
+    }
+    if (input.WasKeyPressed(rw::input::Key::Two)) {
+        m_buildPlacement.SelectBuildable("workbench_stub");
+        m_lastBuildMessage = "Selected Workbench Stub";
+    }
+    if (input.WasKeyPressed(rw::input::Key::Three)) {
+        m_buildPlacement.SelectBuildable("simple_wall");
+        m_lastBuildMessage = "Selected Simple Wall";
+    }
+
+    if (input.WasKeyPressed(rw::input::Key::Q)) {
+        m_buildPlacement.Rotate(-0.2617994F);
+    }
+    if (input.WasKeyPressed(rw::input::Key::R)) {
+        m_buildPlacement.Rotate(0.2617994F);
+    }
+
+    m_buildPlacement.UpdatePreview(m_buildableDatabase, m_player.Camera());
+    SyncBuildPreview();
+
+    if (input.WasKeyPressed(rw::input::Key::Enter)) {
+        const BuildPlacementResult result = m_buildPlacement.TryPlace(
+            m_buildableDatabase, m_itemDatabase, m_inventory, m_placedBuildables);
+        m_lastBuildMessage = result.message;
+        rw::core::Logger::Info(m_lastBuildMessage);
+        if (result.success) {
+            AddPlacedBuildable(result.placed);
+        }
+    }
+}
+
 void SandboxGame::GatherTargetNode(GatherableNode& node)
 {
     const GatheringResult result = node.Gather(m_itemDatabase, m_inventory);
@@ -287,6 +349,47 @@ void SandboxGame::CraftDebugRecipe(const std::string& recipeId)
             m_hotbar.AssignSlot(index, index);
         }
     }
+}
+
+void SandboxGame::SyncBuildPreview()
+{
+    const BuildableDefinition* selected = m_buildableDatabase.FindById(
+        m_buildPlacement.SelectedBuildableId());
+
+    for (rw::scene::SceneObject& object : m_scene.MutableObjects()) {
+        if (object.name != "Build Preview") {
+            continue;
+        }
+
+        if (!m_buildPlacement.BuildModeActive() || selected == nullptr) {
+            object.transform.scale = { 0.0F, 0.0F, 0.0F };
+            return;
+        }
+
+        object.primitive = selected->primitive;
+        object.transform = m_buildPlacement.PreviewTransform();
+        object.color = { 0.30F, 0.85F, 0.65F };
+        return;
+    }
+}
+
+void SandboxGame::AddPlacedBuildable(const PlacedBuildable& placed)
+{
+    m_placedBuildables.push_back(placed);
+
+    rw::scene::SceneObject object;
+    object.name = placed.displayName;
+    object.transform = placed.transform;
+    object.primitive = placed.primitive;
+    object.color = { 0.82F, 0.70F, 0.40F };
+    m_scene.AddObject(object);
+}
+
+std::string SandboxGame::SelectedBuildableName() const
+{
+    const BuildableDefinition* selected = m_buildableDatabase.FindById(
+        m_buildPlacement.SelectedBuildableId());
+    return selected != nullptr ? selected->displayName : "None";
 }
 
 std::string SandboxGame::InventorySummary() const

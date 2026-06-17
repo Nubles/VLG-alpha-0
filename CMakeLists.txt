@@ -42,6 +42,8 @@ else()
 endif()
 
 add_library(GameRuntime STATIC
+    Game/Source/Building/BuildableDatabase.cpp
+    Game/Source/Building/BuildPlacementController.cpp
     Game/Source/Crafting/CraftingService.cpp
     Game/Source/Crafting/RecipeDatabase.cpp
     Game/Source/Crafting/RecipeDefinition.cpp
