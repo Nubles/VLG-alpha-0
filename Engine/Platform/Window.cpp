@@ -98,7 +98,7 @@ Window::Window(const WindowConfig& config)
     windowClass.style = CS_HREDRAW | CS_VREDRAW;
     windowClass.lpfnWndProc = WindowProc;
     windowClass.hInstance = m_impl->instance;
-    windowClass.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+    windowClass.hCursor = LoadCursorW(nullptr, MAKEINTRESOURCEW(32512));
     windowClass.hbrBackground = CreateSolidBrush(kBlankColor);
     windowClass.lpszClassName = className.c_str();
 
