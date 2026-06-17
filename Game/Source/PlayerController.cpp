@@ -70,6 +70,12 @@ void PlayerController::SetPosition(const rw::math::Vec3& position)
     m_camera.position = position;
 }
 
+void PlayerController::SetLook(float yawRadians, float pitchRadians)
+{
+    m_camera.yawRadians = yawRadians;
+    m_camera.pitchRadians = std::clamp(pitchRadians, -1.45F, 1.45F);
+}
+
 const PlayerVitals& PlayerController::Vitals() const
 {
     return m_vitals;

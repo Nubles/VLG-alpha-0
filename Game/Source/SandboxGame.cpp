@@ -206,7 +206,7 @@ void SandboxGame::UpdateBuildPlacement(const rw::input::InputState& input)
 
     if (input.WasKeyPressed(rw::input::Key::Enter)) {
         const BuildPlacementResult result = m_buildPlacement.TryPlace(
-            m_buildableDatabase, m_itemDatabase, m_inventory, m_placedBuildables);
+            m_buildableDatabase, m_itemDatabase, m_inventory, m_worldState.PlacedBuildables());
         m_lastBuildMessage = result.message;
         PushDebugMessage(m_lastBuildMessage);
         if (result.success) {
@@ -434,12 +434,16 @@ void SandboxGame::SyncBuildPreview()
 
 void SandboxGame::AddPlacedBuildable(const PlacedBuildable& placed)
 {
-    m_placedBuildables.push_back(placed);
+    PlacedBuildable registered = placed;
+    if (registered.instanceId.empty()) {
+        registered.instanceId = m_worldState.AllocatePlacedBuildableId();
+    }
+    m_worldState.RegisterPlacedBuildable(registered);
 
     rw::scene::SceneObject object;
-    object.name = placed.displayName;
-    object.transform = placed.transform;
-    object.primitive = placed.primitive;
+    object.name = registered.instanceId;
+    object.transform = registered.transform;
+    object.primitive = registered.primitive;
     object.color = { 0.82F, 0.70F, 0.40F };
     m_scene.AddObject(object);
 }
@@ -519,6 +523,8 @@ SaveData SandboxGame::CaptureSaveData() const
     SaveData data;
     data.biomeId = m_currentBiome != nullptr ? m_currentBiome->id : "mistwood_hollow";
     data.playerPosition = m_player.Camera().position;
+    data.playerYawRadians = m_player.Camera().yawRadians;
+    data.playerPitchRadians = m_player.Camera().pitchRadians;
     data.playerHealth = m_player.Vitals().Health();
     data.playerStamina = m_player.Vitals().Stamina();
     data.inventorySlots = m_inventory.Slots();
@@ -527,9 +533,11 @@ SaveData SandboxGame::CaptureSaveData() const
     data.mistwoodObjectiveCompleted = m_objectiveState.IsCompleted("mistwood_fracture_shrine");
     data.realmWispAlive = m_realmWisp.health.IsAlive();
     data.realmWispPosition = m_realmWisp.transform.position;
+    data.depletedGatherableIds = m_worldState.DepletedGatherableIds(m_gatherableNodes);
 
-    for (const PlacedBuildable& placed : m_placedBuildables) {
+    for (const PlacedBuildable& placed : m_worldState.PlacedBuildables()) {
         data.placedBuildables.push_back({
+            placed.instanceId,
             placed.buildableId,
             placed.transform.position,
             placed.transform.rotationEuler.y,
@@ -542,6 +550,7 @@ SaveData SandboxGame::CaptureSaveData() const
 void SandboxGame::ApplySaveData(const SaveData& data)
 {
     m_player.SetPosition(data.playerPosition);
+    m_player.SetLook(data.playerYawRadians, data.playerPitchRadians);
     m_player.Vitals().SetHealth(data.playerHealth);
     m_player.Vitals().SetStamina(data.playerStamina);
 
@@ -567,14 +576,14 @@ void SandboxGame::ApplySaveData(const SaveData& data)
     }
 
     auto& objects = m_scene.MutableObjects();
-    for (const PlacedBuildable& placed : m_placedBuildables) {
+    for (const PlacedBuildable& placed : m_worldState.PlacedBuildables()) {
         objects.erase(std::remove_if(objects.begin(), objects.end(),
                           [&placed](const rw::scene::SceneObject& object) {
-                              return object.name == placed.displayName;
+                              return object.name == placed.instanceId;
                           }),
             objects.end());
     }
-    m_placedBuildables.clear();
+    std::vector<PlacedBuildable> loadedBuildables;
 
     for (const SavedBuildable& saved : data.placedBuildables) {
         const BuildableDefinition* definition = m_buildableDatabase.FindById(saved.buildableId);
@@ -583,6 +592,7 @@ void SandboxGame::ApplySaveData(const SaveData& data)
         }
 
         PlacedBuildable placed;
+        placed.instanceId = saved.instanceId;
         placed.buildableId = definition->id;
         placed.displayName = definition->displayName;
         placed.transform.position = saved.position;
@@ -590,8 +600,20 @@ void SandboxGame::ApplySaveData(const SaveData& data)
         placed.transform.scale = definition->placedScale;
         placed.primitive = definition->primitive;
         placed.placementRadius = definition->placementRadius;
-        AddPlacedBuildable(placed);
+        loadedBuildables.push_back(placed);
     }
+    m_worldState.ReplacePlacedBuildables(loadedBuildables);
+
+    for (const PlacedBuildable& placed : m_worldState.PlacedBuildables()) {
+        rw::scene::SceneObject object;
+        object.name = placed.instanceId;
+        object.transform = placed.transform;
+        object.primitive = placed.primitive;
+        object.color = { 0.82F, 0.70F, 0.40F };
+        m_scene.AddObject(object);
+    }
+
+    m_worldState.ApplyDepletedGatherableIds(m_gatherableNodes, data.depletedGatherableIds);
 
     m_realmWisp = EnemyAgent::CreateRealmWisp();
     m_realmWisp.transform.position = data.realmWispPosition;

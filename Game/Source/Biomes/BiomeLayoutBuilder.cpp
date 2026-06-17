@@ -63,6 +63,7 @@ BiomeLayout BiomeLayoutBuilder::BuildMistwoodHollow()
     AddSceneObject(layout, realmFracture.name.c_str(), realmFracture.transform.position, realmFracture.transform.scale, { 0.35F, 0.45F, 0.95F });
 
     GatherableNode branchPileA;
+    branchPileA.id = "branch_pile_01";
     branchPileA.name = "Branch Pile";
     branchPileA.transform.position = { -1.5F, 0.35F, 4.0F };
     branchPileA.transform.scale = { 0.8F, 0.5F, 0.8F };
@@ -73,10 +74,12 @@ BiomeLayout BiomeLayoutBuilder::BuildMistwoodHollow()
     AddGatherable(layout, branchPileA, { 0.45F, 0.28F, 0.13F });
 
     GatherableNode branchPileB = branchPileA;
+    branchPileB.id = "branch_pile_02";
     branchPileB.transform.position = { 0.4F, 0.35F, 4.4F };
     AddGatherable(layout, branchPileB, { 0.42F, 0.26F, 0.12F });
 
     GatherableNode looseStone;
+    looseStone.id = "loose_stone_01";
     looseStone.name = "Loose Stone";
     looseStone.transform.position = { 3.5F, 0.35F, 1.0F };
     looseStone.transform.scale = { 0.7F, 0.5F, 0.7F };
@@ -87,6 +90,7 @@ BiomeLayout BiomeLayoutBuilder::BuildMistwoodHollow()
     AddGatherable(layout, looseStone, { 0.42F, 0.42F, 0.45F });
 
     GatherableNode fiberPlant;
+    fiberPlant.id = "fiber_plant_01";
     fiberPlant.name = "Fiber Plant";
     fiberPlant.transform.position = { -3.2F, 0.45F, 0.4F };
     fiberPlant.transform.scale = { 0.5F, 0.9F, 0.5F };
@@ -97,6 +101,7 @@ BiomeLayout BiomeLayoutBuilder::BuildMistwoodHollow()
     AddGatherable(layout, fiberPlant, { 0.28F, 0.65F, 0.32F });
 
     GatherableNode crackedRock;
+    crackedRock.id = "cracked_rock_01";
     crackedRock.name = "Cracked Rock";
     crackedRock.transform.position = { 4.8F, 0.55F, -3.0F };
     crackedRock.transform.scale = { 1.0F, 1.0F, 1.0F };

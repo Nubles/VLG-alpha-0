@@ -198,3 +198,21 @@ After stabilisation, the next best implementation direction is likely B: real da
 8. Start a minimal data-loading pass for item definitions.
 9. Move recipes to data after items.
 10. Re-evaluate whether buildables and biome layout should remain code-defined or move to data.
+
+## Stabilisation Pass 1 Result
+
+Completed after this review:
+
+- Added `SandboxWorldState` to own placed buildable identity and gatherable depletion helpers.
+- Added deterministic stable IDs to Mistwood Hollow gatherable nodes.
+- Added session-local placed buildable instance IDs such as `placed_0001`.
+- Save/load now persists depleted gatherable IDs.
+- Save/load now persists camera yaw and pitch.
+- Placed buildable instance IDs now round-trip through save/load, and the next ID continues after loaded IDs.
+
+Remaining from the original highest-priority list:
+
+- Continue extracting save/load capture/apply and runtime coordination out of `SandboxGame`.
+- Consider splitting `GameCoreTests.cpp` by domain.
+- Improve objective requirement feedback.
+- Start minimal data loading only after the stabilisation work is complete.

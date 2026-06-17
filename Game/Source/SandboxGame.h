@@ -17,6 +17,7 @@
 #include "Game/Source/Progression/ProgressionState.h"
 #include "Game/Source/PlayerController.h"
 #include "Game/Source/Resources/GatherableNode.h"
+#include "Game/Source/Runtime/SandboxWorldState.h"
 #include "Game/Source/SaveLoad/SaveData.h"
 
 #include <string>
@@ -72,11 +73,11 @@ private:
     ProgressionState m_progression;
     ObjectiveState m_objectiveState;
     DebugMessageLog m_messages { 4 };
+    SandboxWorldState m_worldState;
     Inventory m_inventory;
     Hotbar m_hotbar;
     std::vector<Interactable> m_interactables;
     std::vector<GatherableNode> m_gatherableNodes;
-    std::vector<PlacedBuildable> m_placedBuildables;
     EnemyAgent m_realmWisp;
     const Interactable* m_currentTarget = nullptr;
     int m_currentGatherableIndex = -1;

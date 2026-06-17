@@ -76,6 +76,8 @@ std::string SaveSerializer::Serialize(const SaveData& data)
     text << "version=" << data.version << "\n";
     text << "biome=" << data.biomeId << "\n";
     text << "player.position=" << Vec3Text(data.playerPosition) << "\n";
+    text << "player.yaw=" << data.playerYawRadians << "\n";
+    text << "player.pitch=" << data.playerPitchRadians << "\n";
     text << "player.health=" << data.playerHealth << "\n";
     text << "player.stamina=" << data.playerStamina << "\n";
 
@@ -92,11 +94,16 @@ std::string SaveSerializer::Serialize(const SaveData& data)
 
     for (size_t index = 0; index < data.placedBuildables.size(); ++index) {
         const SavedBuildable& buildable = data.placedBuildables[index];
-        text << "buildable." << index << "=" << buildable.buildableId
+        text << "buildable." << index << "=" << buildable.instanceId
+             << "," << buildable.buildableId
              << "," << buildable.position.x
              << "," << buildable.position.y
              << "," << buildable.position.z
              << "," << buildable.yawRadians << "\n";
+    }
+
+    for (const std::string& gatherableId : data.depletedGatherableIds) {
+        text << "gatherable.depleted=" << gatherableId << "\n";
     }
 
     text << "objective.completed=" << BoolText(data.mistwoodObjectiveCompleted) << "\n";
@@ -141,6 +148,10 @@ LoadResult SaveSerializer::Deserialize(const std::string& text)
                 if (!ParseVec3(value, data.playerPosition)) {
                     return { false, "Invalid player position", {} };
                 }
+            } else if (key == "player.yaw") {
+                data.playerYawRadians = std::stof(value);
+            } else if (key == "player.pitch") {
+                data.playerPitchRadians = std::stof(value);
             } else if (key == "player.health") {
                 data.playerHealth = std::stof(value);
             } else if (key == "player.stamina") {
@@ -159,14 +170,26 @@ LoadResult SaveSerializer::Deserialize(const std::string& text)
                 data.progressionFlags.push_back(value);
             } else if (StartsWith(key, "buildable.")) {
                 const std::vector<std::string> parts = Split(value, ',');
-                if (parts.size() != 5) {
+                if (parts.size() != 5 && parts.size() != 6) {
                     return { false, "Invalid buildable", {} };
                 }
-                data.placedBuildables.push_back({
-                    parts[0],
-                    { std::stof(parts[1]), std::stof(parts[2]), std::stof(parts[3]) },
-                    std::stof(parts[4]),
-                });
+                if (parts.size() == 6) {
+                    data.placedBuildables.push_back({
+                        parts[0],
+                        parts[1],
+                        { std::stof(parts[2]), std::stof(parts[3]), std::stof(parts[4]) },
+                        std::stof(parts[5]),
+                    });
+                } else {
+                    data.placedBuildables.push_back({
+                        {},
+                        parts[0],
+                        { std::stof(parts[1]), std::stof(parts[2]), std::stof(parts[3]) },
+                        std::stof(parts[4]),
+                    });
+                }
+            } else if (key == "gatherable.depleted") {
+                data.depletedGatherableIds.push_back(value);
             } else if (key == "objective.completed") {
                 if (!ParseBool(value, data.mistwoodObjectiveCompleted)) {
                     return { false, "Invalid objective state", {} };

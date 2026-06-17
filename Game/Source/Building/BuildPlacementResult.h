@@ -18,6 +18,7 @@ enum class BuildPlacementFailureReason {
 };
 
 struct PlacedBuildable {
+    std::string instanceId;
     std::string buildableId;
     std::string displayName;
     rw::math::Transform transform;

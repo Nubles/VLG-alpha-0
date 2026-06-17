@@ -12,6 +12,7 @@ namespace rw::game {
 
 class GatherableNode {
 public:
+    std::string id;
     std::string name;
     rw::math::Transform transform;
     float interactionRadius = 1.0F;

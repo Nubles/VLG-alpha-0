@@ -14,6 +14,7 @@ public:
 
     const rw::scene::Camera& Camera() const;
     void SetPosition(const rw::math::Vec3& position);
+    void SetLook(float yawRadians, float pitchRadians);
     const PlayerVitals& Vitals() const;
     PlayerVitals& Vitals();
 
