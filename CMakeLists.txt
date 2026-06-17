@@ -49,6 +49,8 @@ add_library(GameRuntime STATIC
     Game/Source/Items/ItemDefinition.cpp
     Game/Source/PlayerController.cpp
     Game/Source/PlayerVitals.cpp
+    Game/Source/Resources/DropTable.cpp
+    Game/Source/Resources/GatherableNode.cpp
     Game/Source/SandboxGame.cpp
 )
 

@@ -7,6 +7,7 @@
 #include "Game/Source/Interactable.h"
 #include "Game/Source/Items/ItemDatabase.h"
 #include "Game/Source/PlayerController.h"
+#include "Game/Source/Resources/GatherableNode.h"
 
 #include <string>
 #include <vector>
@@ -25,6 +26,8 @@ private:
     void UpdateInteractionTarget(const rw::input::InputState& input);
     void UpdateDebugItemGrants(const rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
+    void GatherTargetNode(GatherableNode& node);
+    void AddGatherableNode(const GatherableNode& node, const rw::math::Vec3& color);
     std::string InventorySummary() const;
 
     rw::scene::Scene m_scene;
@@ -33,9 +36,12 @@ private:
     Inventory m_inventory;
     Hotbar m_hotbar;
     std::vector<Interactable> m_interactables;
+    std::vector<GatherableNode> m_gatherableNodes;
     const Interactable* m_currentTarget = nullptr;
+    int m_currentGatherableIndex = -1;
     std::string m_lastInteractionMessage;
     std::string m_lastInventoryMessage;
+    std::string m_lastGatherMessage;
 };
 
 } // namespace rw::game
