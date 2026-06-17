@@ -6,6 +6,7 @@
 #include "Game/Source/Crafting/CraftingService.h"
 #include "Game/Source/Objectives/ShrineObjective.h"
 #include "Game/Source/Progression/ProgressionFlag.h"
+#include "Game/Source/SaveLoad/SaveGameService.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -33,6 +34,7 @@ void SandboxGame::OnUpdate(float deltaSeconds, const rw::input::InputState& inpu
     UpdateDebugCrafting(input);
     UpdateBuildPlacement(input);
     UpdateCombatAndEnemies(deltaSeconds, input);
+    UpdateSaveLoad(input);
 }
 
 void SandboxGame::OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window)
@@ -87,6 +89,10 @@ std::string SandboxGame::DebugTitle() const
 
     if (!m_lastProgressionMessage.empty()) {
         text << " | " << m_lastProgressionMessage;
+    }
+
+    if (!m_lastSaveMessage.empty()) {
+        text << " | " << m_lastSaveMessage;
     }
 
     return text.str();
@@ -287,6 +293,24 @@ void SandboxGame::UpdateCombatAndEnemies(float deltaSeconds, const rw::input::In
     SyncRealmWispVisual();
 }
 
+void SandboxGame::UpdateSaveLoad(const rw::input::InputState& input)
+{
+    if (input.WasKeyPressed(rw::input::Key::O)) {
+        const SaveResult result = SaveGameService::SaveToFile(CaptureSaveData());
+        m_lastSaveMessage = result.message;
+        rw::core::Logger::Info(m_lastSaveMessage);
+    }
+
+    if (input.WasKeyPressed(rw::input::Key::P)) {
+        const LoadResult result = SaveGameService::LoadFromFile();
+        m_lastSaveMessage = result.message;
+        if (result.success) {
+            ApplySaveData(result.data);
+        }
+        rw::core::Logger::Info(m_lastSaveMessage);
+    }
+}
+
 void SandboxGame::GatherTargetNode(GatherableNode& node)
 {
     const GatheringResult result = node.Gather(m_itemDatabase, m_inventory);
@@ -484,6 +508,96 @@ void SandboxGame::LoadMistwoodHollow()
     wispVisual.transform = m_realmWisp.transform;
     wispVisual.color = { 0.75F, 0.30F, 0.95F };
     m_scene.AddObject(wispVisual);
+}
+
+SaveData SandboxGame::CaptureSaveData() const
+{
+    SaveData data;
+    data.biomeId = m_currentBiome != nullptr ? m_currentBiome->id : "mistwood_hollow";
+    data.playerPosition = m_player.Camera().position;
+    data.playerHealth = m_player.Vitals().Health();
+    data.playerStamina = m_player.Vitals().Stamina();
+    data.inventorySlots = m_inventory.Slots();
+    data.progressionFlags = m_progression.Flags();
+    data.mistwoodFractureStabilized = m_progression.HasFlag(kMistwoodFractureStabilized);
+    data.mistwoodObjectiveCompleted = m_objectiveState.IsCompleted("mistwood_fracture_shrine");
+    data.realmWispAlive = m_realmWisp.health.IsAlive();
+    data.realmWispPosition = m_realmWisp.transform.position;
+
+    for (const PlacedBuildable& placed : m_placedBuildables) {
+        data.placedBuildables.push_back({
+            placed.buildableId,
+            placed.transform.position,
+            placed.transform.rotationEuler.y,
+        });
+    }
+
+    return data;
+}
+
+void SandboxGame::ApplySaveData(const SaveData& data)
+{
+    m_player.SetPosition(data.playerPosition);
+    m_player.Vitals().SetHealth(data.playerHealth);
+    m_player.Vitals().SetStamina(data.playerStamina);
+
+    std::vector<ItemStack> slots = data.inventorySlots;
+    slots.resize(static_cast<size_t>(m_inventory.SlotCount()));
+    m_inventory.ReplaceSlots(slots);
+
+    m_progression.Clear();
+    for (const std::string& flag : data.progressionFlags) {
+        m_progression.SetFlag(flag);
+    }
+    if (data.mistwoodFractureStabilized) {
+        m_progression.SetFlag(kMistwoodFractureStabilized);
+    }
+
+    m_objectiveState.Reset();
+    if (data.mistwoodObjectiveCompleted) {
+        m_objectiveState.Complete("mistwood_fracture_shrine");
+        m_progression.SetFlag(kMistwoodShrineCompleted);
+    }
+    if (data.mistwoodFractureStabilized) {
+        m_progression.SetFlag(kRecipeRealmAnchorUnlocked);
+    }
+
+    auto& objects = m_scene.MutableObjects();
+    for (const PlacedBuildable& placed : m_placedBuildables) {
+        objects.erase(std::remove_if(objects.begin(), objects.end(),
+                          [&placed](const rw::scene::SceneObject& object) {
+                              return object.name == placed.displayName;
+                          }),
+            objects.end());
+    }
+    m_placedBuildables.clear();
+
+    for (const SavedBuildable& saved : data.placedBuildables) {
+        const BuildableDefinition* definition = m_buildableDatabase.FindById(saved.buildableId);
+        if (definition == nullptr) {
+            continue;
+        }
+
+        PlacedBuildable placed;
+        placed.buildableId = definition->id;
+        placed.displayName = definition->displayName;
+        placed.transform.position = saved.position;
+        placed.transform.rotationEuler = { 0.0F, saved.yawRadians, 0.0F };
+        placed.transform.scale = definition->placedScale;
+        placed.primitive = definition->primitive;
+        placed.placementRadius = definition->placementRadius;
+        AddPlacedBuildable(placed);
+    }
+
+    m_realmWisp = EnemyAgent::CreateRealmWisp();
+    m_realmWisp.transform.position = data.realmWispPosition;
+    if (!data.realmWispAlive) {
+        m_realmWisp.health.ApplyDamage({ 9999.0F, "Load" });
+        m_realmWisp.lootDropped = true;
+    }
+
+    UpdateRealmFractureVisual();
+    SyncRealmWispVisual();
 }
 
 void SandboxGame::SyncRealmWispVisual()

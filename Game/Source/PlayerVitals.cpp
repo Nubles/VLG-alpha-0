@@ -67,6 +67,18 @@ void PlayerVitals::Heal(float amount)
     m_health = std::min(100.0F, m_health + std::max(0.0F, amount));
 }
 
+void PlayerVitals::SetHealth(float health)
+{
+    m_health = std::clamp(health, 0.0F, 100.0F);
+}
+
+void PlayerVitals::SetStamina(float stamina)
+{
+    m_stamina = std::clamp(stamina, 0.0F, 100.0F);
+    m_regenDelayRemaining = 0.0F;
+    m_isSprinting = false;
+}
+
 bool PlayerVitals::IsAlive() const
 {
     return m_health > 0.0F;

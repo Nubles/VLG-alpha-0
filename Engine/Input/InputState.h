@@ -12,6 +12,8 @@ enum class Key {
     D,
     B,
     C,
+    O,
+    P,
     Q,
     R,
     Up,

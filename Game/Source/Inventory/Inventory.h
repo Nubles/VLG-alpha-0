@@ -15,6 +15,7 @@ public:
     int AddItem(const ItemDatabase& database, const std::string& itemId, int quantity);
     bool Contains(const std::string& itemId, int quantity = 1) const;
     bool RemoveItem(const std::string& itemId, int quantity);
+    void ReplaceSlots(std::vector<ItemStack> slots);
 
     const std::vector<ItemStack>& Slots() const;
     int SlotCount() const;

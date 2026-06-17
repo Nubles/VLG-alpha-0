@@ -16,6 +16,7 @@
 #include "Game/Source/Progression/ProgressionState.h"
 #include "Game/Source/PlayerController.h"
 #include "Game/Source/Resources/GatherableNode.h"
+#include "Game/Source/SaveLoad/SaveData.h"
 
 #include <string>
 #include <vector>
@@ -36,6 +37,7 @@ private:
     void UpdateDebugCrafting(const rw::input::InputState& input);
     void UpdateBuildPlacement(const rw::input::InputState& input);
     void UpdateCombatAndEnemies(float deltaSeconds, const rw::input::InputState& input);
+    void UpdateSaveLoad(const rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
     void CraftDebugRecipe(const std::string& recipeId);
     void InteractWithRealmFracture();
@@ -44,6 +46,8 @@ private:
     void ResetRealmWisp();
     void SyncRealmWispVisual();
     void LoadMistwoodHollow();
+    SaveData CaptureSaveData() const;
+    void ApplySaveData(const SaveData& data);
     void SyncBuildPreview();
     void AddPlacedBuildable(const PlacedBuildable& placed);
     std::string SelectedBuildableName() const;
@@ -77,6 +81,7 @@ private:
     std::string m_lastBuildMessage;
     std::string m_lastCombatMessage;
     std::string m_lastProgressionMessage;
+    std::string m_lastSaveMessage;
 };
 
 } // namespace rw::game

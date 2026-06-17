@@ -67,6 +67,9 @@ add_library(GameRuntime STATIC
     Game/Source/Progression/ProgressionState.cpp
     Game/Source/Resources/DropTable.cpp
     Game/Source/Resources/GatherableNode.cpp
+    Game/Source/SaveLoad/SaveData.cpp
+    Game/Source/SaveLoad/SaveGameService.cpp
+    Game/Source/SaveLoad/SaveSerializer.cpp
     Game/Source/SandboxGame.cpp
 )
 

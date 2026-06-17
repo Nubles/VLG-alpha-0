@@ -1,6 +1,7 @@
 #include "Game/Source/Inventory/Inventory.h"
 
 #include <algorithm>
+#include <utility>
 
 namespace rw::game {
 
@@ -90,6 +91,11 @@ bool Inventory::RemoveItem(const std::string& itemId, int quantity)
     }
 
     return true;
+}
+
+void Inventory::ReplaceSlots(std::vector<ItemStack> slots)
+{
+    m_slots = std::move(slots);
 }
 
 const std::vector<ItemStack>& Inventory::Slots() const

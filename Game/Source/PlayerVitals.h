@@ -12,6 +12,8 @@ public:
     bool IsSprinting() const;
     void ApplyDamage(float damage);
     void Heal(float amount);
+    void SetHealth(float health);
+    void SetStamina(float stamina);
     bool IsAlive() const;
 
 private:
