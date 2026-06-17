@@ -5,6 +5,9 @@ namespace rw::input {
 void InputState::BeginFrame()
 {
     m_escapeDown = false;
+    for (bool& pressed : m_pressed) {
+        pressed = false;
+    }
 }
 
 void InputState::RequestQuit()
@@ -33,12 +36,19 @@ bool InputState::EscapeDown() const
 
 void InputState::SetKeyDown(Key key, bool isDown)
 {
-    m_keys[static_cast<int>(key)] = isDown;
+    const int index = static_cast<int>(key);
+    m_pressed[index] = isDown && !m_keys[index];
+    m_keys[index] = isDown;
 }
 
 bool InputState::IsKeyDown(Key key) const
 {
     return m_keys[static_cast<int>(key)];
+}
+
+bool InputState::WasKeyPressed(Key key) const
+{
+    return m_pressed[static_cast<int>(key)];
 }
 
 } // namespace rw::input

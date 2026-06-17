@@ -14,7 +14,7 @@ int Application::Run(GameLayer& game)
         Logger::Info("Starting Realmbound Wilds engine bootstrap.");
 
         rw::platform::Window window({
-            "Realmbound Wilds - Basic 3D Sandbox",
+            "Realmbound Wilds - Player Controller + Interaction",
             1280,
             720,
         });
@@ -27,7 +27,7 @@ int Application::Run(GameLayer& game)
             window.PollEvents(m_input);
             game.OnUpdate(deltaSeconds, m_input);
             game.OnRender(m_renderer, window);
-            m_debugOverlay.Update(window, deltaSeconds);
+            m_debugOverlay.Update(window, deltaSeconds, game.DebugTitle());
 
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }

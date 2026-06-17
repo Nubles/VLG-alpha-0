@@ -13,6 +13,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(EngineRuntime STATIC
     Engine/Core/Application.cpp
     Engine/Core/Clock.cpp
+    Engine/Core/GameLayer.cpp
     Engine/Core/Logger.cpp
     Engine/Debug/DebugOverlay.cpp
     Engine/Input/InputState.cpp
@@ -40,12 +41,17 @@ endif()
 
 add_executable(RealmboundWilds
     Game/Source/Main.cpp
+    Game/Source/Interactable.cpp
+    Game/Source/PlayerController.cpp
+    Game/Source/PlayerVitals.cpp
     Game/Source/SandboxGame.cpp
 )
 
 target_link_libraries(RealmboundWilds PRIVATE EngineRuntime)
 
 add_executable(EngineCoreTests
+    Game/Source/Interactable.cpp
+    Game/Source/PlayerVitals.cpp
     Tests/EngineCoreTests.cpp
 )
 

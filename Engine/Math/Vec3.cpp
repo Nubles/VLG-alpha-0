@@ -27,6 +27,14 @@ Vec3& Vec3::operator+=(const Vec3& other)
     return *this;
 }
 
+Vec3& Vec3::operator-=(const Vec3& other)
+{
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
+    return *this;
+}
+
 float Dot(const Vec3& a, const Vec3& b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
@@ -57,4 +65,3 @@ Vec3 Normalize(const Vec3& value)
 }
 
 } // namespace rw::math
-

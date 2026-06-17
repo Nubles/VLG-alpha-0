@@ -12,6 +12,7 @@ enum class Key {
     Left,
     Right,
     Shift,
+    E,
     Escape,
     Count
 };
@@ -27,11 +28,13 @@ public:
     bool EscapeDown() const;
     void SetKeyDown(Key key, bool isDown);
     bool IsKeyDown(Key key) const;
+    bool WasKeyPressed(Key key) const;
 
 private:
     bool m_quitRequested = false;
     bool m_escapeDown = false;
     bool m_keys[static_cast<int>(Key::Count)] = {};
+    bool m_pressed[static_cast<int>(Key::Count)] = {};
 };
 
 } // namespace rw::input

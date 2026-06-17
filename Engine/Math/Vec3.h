@@ -19,6 +19,7 @@ struct Vec3 {
     Vec3 operator-(const Vec3& other) const;
     Vec3 operator*(float scalar) const;
     Vec3& operator+=(const Vec3& other);
+    Vec3& operator-=(const Vec3& other);
 };
 
 float Dot(const Vec3& a, const Vec3& b);
@@ -27,4 +28,3 @@ float Length(const Vec3& value);
 Vec3 Normalize(const Vec3& value);
 
 } // namespace rw::math
-
