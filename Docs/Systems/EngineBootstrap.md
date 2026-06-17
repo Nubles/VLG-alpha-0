@@ -30,6 +30,13 @@ cmake -S . -B build
 cmake --build build
 ```
 
+For the same Windows generator used by CI:
+
+```powershell
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Debug
+```
+
 The current environment used by Codex did not have `cmake` available on PATH, so local build verification could not be completed here.
 
 ## Run
@@ -58,4 +65,3 @@ Manual Milestone 0 checks:
 4. Closing the window exits cleanly.
 5. Pressing Escape exits cleanly.
 6. Console logs show startup and shutdown messages.
-

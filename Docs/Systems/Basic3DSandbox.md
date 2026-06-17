@@ -41,6 +41,13 @@ cmake -S . -B build
 cmake --build build
 ```
 
+For the same Windows generator used by CI:
+
+```powershell
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Debug
+```
+
 ## Run
 
 ```powershell
@@ -71,4 +78,3 @@ Manual checks:
 - Inventory, crafting, building, combat, AI, or survival systems.
 - Terrain, world chunks, procedural generation, or asset loading.
 - Shader-based renderer, materials, textures, mesh assets, or editor tools.
-
