@@ -228,7 +228,28 @@ Exit criteria:
 - Debug tools make iteration fast.
 - The project is ready for the next expansion decision.
 
-## Current Next Scope
+## Post-Vertical-Slice Stabilisation
 
-The next implementation task should be Milestone 0: create the custom C++ engine bootstrap with CMake, Engine/Game separation, a window, main loop, logging, timing, input polling, blank screen, debug overlay placeholder, and build/run documentation.
+Milestones 0-11 have produced the first playable debug vertical slice. Before adding another major gameplay milestone, the project should stabilise the current slice so future systems do not pile onto fragile integration code.
 
+Recommended cleanup order:
+
+1. Extract current vertical-slice runtime state and save/load capture/apply logic out of `SandboxGame`.
+2. Add stable IDs to gatherable nodes and placed buildable instances.
+3. Persist gatherable depletion in the save/load prototype.
+4. Split or reorganise `GameCoreTests.cpp` into clearer domain-focused test sections/files.
+5. Update developer/manual QA documentation around the full happy path.
+6. Add camera yaw/pitch to save/load.
+7. Improve objective requirement feedback.
+8. Begin a minimal data-loading pass for item definitions, then recipes, then buildables.
+
+Primary next direction: stabilise the current vertical slice first.
+
+Next milestone options after stabilisation:
+
+- Real data loading for items, recipes, and buildables.
+- Renderer/debug visual improvements.
+- Proper UI/HUD foundation.
+- Terrain/world foundation.
+- Second biome/progression chain.
+- Enemy/combat expansion.
