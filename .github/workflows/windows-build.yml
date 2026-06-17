@@ -24,10 +24,18 @@ jobs:
       - name: Build
         shell: pwsh
         run: |
-          cmake --build build --config Debug
+          cmake --build build --config Debug *> build-output.txt
+          Get-Content build-output.txt
           if ($LASTEXITCODE -ne 0) {
             throw "CMake build failed with exit code $LASTEXITCODE"
           }
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-output
+          path: build-output.txt
 
       - name: Run EngineCoreTests
         shell: pwsh
