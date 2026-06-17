@@ -25,8 +25,13 @@ void PlayerVitals::Update(float deltaSeconds, bool wantsSprint, bool isMoving)
     }
 
     if (m_regenDelayRemaining > 0.0F) {
+        const float remainingDelta = deltaSeconds - m_regenDelayRemaining;
         m_regenDelayRemaining = std::max(0.0F, m_regenDelayRemaining - deltaSeconds);
-        return;
+        if (remainingDelta <= 0.0F) {
+            return;
+        }
+
+        deltaSeconds = remainingDelta;
     }
 
     m_stamina = std::min(kMaxStamina, m_stamina + kStaminaRegenPerSecond * deltaSeconds);

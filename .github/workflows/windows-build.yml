@@ -54,6 +54,7 @@ jobs:
       - name: Run EngineCoreTests
         shell: pwsh
         run: |
+          $env:__MSVCRT_DEBUGGER_HOOK = "0"
           .\build\Debug\EngineCoreTests.exe
           if ($LASTEXITCODE -ne 0) {
             throw "EngineCoreTests failed with exit code $LASTEXITCODE"
