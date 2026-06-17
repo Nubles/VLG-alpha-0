@@ -65,6 +65,11 @@ const rw::scene::Camera& PlayerController::Camera() const
     return m_camera;
 }
 
+void PlayerController::SetPosition(const rw::math::Vec3& position)
+{
+    m_camera.position = position;
+}
+
 const PlayerVitals& PlayerController::Vitals() const
 {
     return m_vitals;

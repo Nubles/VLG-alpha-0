@@ -44,6 +44,9 @@ endif()
 add_library(GameRuntime STATIC
     Game/Source/AI/EnemyAgent.cpp
     Game/Source/AI/EnemyBrain.cpp
+    Game/Source/Biomes/BiomeDatabase.cpp
+    Game/Source/Biomes/BiomeDefinition.cpp
+    Game/Source/Biomes/BiomeLayoutBuilder.cpp
     Game/Source/Building/BuildableDatabase.cpp
     Game/Source/Building/BuildPlacementController.cpp
     Game/Source/Combat/Damageable.cpp

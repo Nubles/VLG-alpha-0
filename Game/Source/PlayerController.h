@@ -13,6 +13,7 @@ public:
     void Update(float deltaSeconds, const rw::input::InputState& input);
 
     const rw::scene::Camera& Camera() const;
+    void SetPosition(const rw::math::Vec3& position);
     const PlayerVitals& Vitals() const;
     PlayerVitals& Vitals();
 

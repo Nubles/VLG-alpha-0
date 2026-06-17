@@ -3,6 +3,7 @@
 #include "Engine/Core/GameLayer.h"
 #include "Engine/Scene/Scene.h"
 #include "Game/Source/AI/EnemyAgent.h"
+#include "Game/Source/Biomes/BiomeDatabase.h"
 #include "Game/Source/Building/BuildableDatabase.h"
 #include "Game/Source/Building/BuildPlacementController.h"
 #include "Game/Source/Combat/PlayerCombat.h"
@@ -37,6 +38,7 @@ private:
     void CraftDebugRecipe(const std::string& recipeId);
     void ResetRealmWisp();
     void SyncRealmWispVisual();
+    void LoadMistwoodHollow();
     void SyncBuildPreview();
     void AddPlacedBuildable(const PlacedBuildable& placed);
     std::string SelectedBuildableName() const;
@@ -48,6 +50,8 @@ private:
     PlayerController m_player;
     ItemDatabase m_itemDatabase;
     RecipeDatabase m_recipeDatabase;
+    BiomeDatabase m_biomeDatabase;
+    const BiomeDefinition* m_currentBiome = nullptr;
     BuildableDatabase m_buildableDatabase;
     BuildPlacementController m_buildPlacement;
     PlayerCombat m_playerCombat;
