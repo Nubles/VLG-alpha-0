@@ -13,6 +13,11 @@ enum class Key {
     Right,
     Shift,
     E,
+    F1,
+    F2,
+    F3,
+    F4,
+    F5,
     Escape,
     Count
 };

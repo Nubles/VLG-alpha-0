@@ -43,6 +43,10 @@ endif()
 
 add_library(GameRuntime STATIC
     Game/Source/Interactable.cpp
+    Game/Source/Inventory/Hotbar.cpp
+    Game/Source/Inventory/Inventory.cpp
+    Game/Source/Items/ItemDatabase.cpp
+    Game/Source/Items/ItemDefinition.cpp
     Game/Source/PlayerController.cpp
     Game/Source/PlayerVitals.cpp
     Game/Source/SandboxGame.cpp
@@ -63,3 +67,11 @@ add_executable(EngineCoreTests
 target_link_libraries(EngineCoreTests PRIVATE EngineRuntime GameRuntime)
 
 add_test(NAME EngineCoreTests COMMAND EngineCoreTests)
+
+add_executable(GameCoreTests
+    Tests/GameCoreTests.cpp
+)
+
+target_link_libraries(GameCoreTests PRIVATE GameRuntime)
+
+add_test(NAME GameCoreTests COMMAND GameCoreTests)

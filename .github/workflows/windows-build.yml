@@ -59,3 +59,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             throw "EngineCoreTests failed with exit code $LASTEXITCODE"
           }
+
+      - name: Run GameCoreTests
+        shell: pwsh
+        run: |
+          $env:__MSVCRT_DEBUGGER_HOOK = "0"
+          .\build\Debug\GameCoreTests.exe
+          if ($LASTEXITCODE -ne 0) {
+            throw "GameCoreTests failed with exit code $LASTEXITCODE"
+          }
