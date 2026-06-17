@@ -1,0 +1,234 @@
+# Realmbound Wilds Roadmap
+
+## Milestone 0: Custom Engine Bootstrap
+
+Goal: create the smallest custom C++ engine shell that can build and run.
+
+Deliverables:
+
+- CMake project.
+- Engine/Game folder separation.
+- Window creation.
+- Main loop.
+- Logging.
+- Time and delta-time.
+- Input polling.
+- Blank screen.
+- Debug overlay placeholder.
+- Documentation.
+
+Exit criteria:
+
+- Project configures and builds.
+- The application opens a window.
+- The main loop runs with stable delta-time.
+- Input polling detects at least quit/close.
+- A blank screen clears consistently.
+- Developer can follow docs to build and run from a clean checkout.
+
+## Milestone 1: Basic 3D Sandbox
+
+Goal: prove the rendering and scene pipeline with primitive 3D objects.
+
+Deliverables:
+
+- Renderer draws primitive shapes.
+- Camera movement.
+- Basic scene objects.
+- Transform system.
+- Debug grid.
+- Simple test scene.
+
+Exit criteria:
+
+- A test scene renders primitive objects and a debug grid.
+- Camera can move through the scene.
+- Scene objects have transforms that can be inspected or logged.
+
+## Milestone 2: Player Controller + Interaction
+
+Goal: make the game controllable from a player perspective and establish the interaction foundation.
+
+Deliverables:
+
+- First-person or third-person controller.
+- Health and stamina values.
+- Sprint stamina drain.
+- Stamina regeneration after a short delay.
+- Interaction raycast.
+- Basic interactable interface.
+- Debug readout for health, stamina, and hit interactable.
+
+Exit criteria:
+
+- Player can move and look around the sandbox.
+- Sprinting drains stamina and recovery works.
+- Interaction raycast reports the name of a hit interactable object.
+
+## Milestone 3: Data-Driven Items + Inventory
+
+Goal: establish item definitions and the first inventory model.
+
+Deliverables:
+
+- Item definitions loaded from data files.
+- Item stacks.
+- Inventory slots.
+- Hotbar.
+- Debug item granting.
+
+Exit criteria:
+
+- Item definitions load at startup.
+- Debug tools can grant items.
+- Stack limits and empty slots behave predictably.
+- Hotbar selection works.
+
+## Milestone 4: Resource Gathering
+
+Goal: let the player gather resources from simple world nodes.
+
+Deliverables:
+
+- Gatherable resource nodes.
+- Drop tables.
+- Tool requirements.
+- Add gathered items to inventory.
+
+Exit criteria:
+
+- Player can gather from a test node.
+- Drops are driven by data.
+- Tool requirements can allow or block gathering.
+
+## Milestone 5: Crafting
+
+Goal: let the player convert resources into useful items.
+
+Deliverables:
+
+- Recipe definitions.
+- Ingredient checks.
+- Crafting service.
+- Workbench or station requirement.
+
+Exit criteria:
+
+- Recipes load from data.
+- Crafting consumes ingredients and produces output.
+- Station requirements can block or allow recipes.
+- Failures produce clear debug output.
+
+## Milestone 6: Building Placement
+
+Goal: let the player place simple build pieces in the world.
+
+Deliverables:
+
+- Placeable build pieces.
+- Preview ghost.
+- Rotation.
+- Cost checks.
+- Placement validation.
+
+Exit criteria:
+
+- Player can preview, rotate, place, and cancel a build piece.
+- Invalid placement is blocked.
+- Costs are consumed only on successful placement.
+
+## Milestone 7: Combat + Enemy AI
+
+Goal: create one basic threat and a minimal combat loop.
+
+Deliverables:
+
+- Damage system.
+- Basic enemy state machine.
+- Enemy attacks.
+- Loot drops.
+
+Exit criteria:
+
+- Player can damage and defeat a basic enemy.
+- Enemy can detect, chase, and attack the player.
+- Enemy drops loot through the same item/inventory path used by resources.
+
+## Milestone 8: First Biome Test Area
+
+Goal: assemble the first small handcrafted wilderness zone.
+
+Deliverables:
+
+- Small handcrafted wilderness zone.
+- Resources.
+- One enemy.
+- Shrine.
+- Ambience placeholders.
+- Realm fracture placeholder.
+
+Exit criteria:
+
+- The area supports movement, interaction, gathering, crafting, building, and combat.
+- Realm fracture placeholder gives the zone a distinct identity.
+- The test area is small enough to iterate quickly.
+
+## Milestone 9: Shrine/Boss Objective + Progression
+
+Goal: create a focused progression objective.
+
+Deliverables:
+
+- Shrine or mini-boss encounter.
+- Progression flag.
+- Recipe or region unlock.
+- Realm stabilization placeholder.
+
+Exit criteria:
+
+- Player can discover and complete the objective.
+- Completion sets a progression flag.
+- At least one recipe, station, material, or region gate unlocks afterward.
+
+## Milestone 10: Save/Load
+
+Goal: persist the first vertical slice state.
+
+Deliverables:
+
+- Player state.
+- Inventory.
+- Placed structures.
+- Gathered resources.
+- Progression flags.
+
+Exit criteria:
+
+- Player can quit and reload with vertical slice state preserved.
+- Save reset works for testing.
+- Save data uses stable IDs for definitions.
+
+## Milestone 11: Vertical Slice Polish
+
+Goal: make the first complete loop coherent, testable, and presentable.
+
+Deliverables:
+
+- Basic UI.
+- Onboarding prompts.
+- Audio and VFX placeholders.
+- Performance pass.
+- Bug pass.
+- Test checklist.
+
+Exit criteria:
+
+- A new tester can play from spawn to shrine completion.
+- The application has no blocking errors.
+- Debug tools make iteration fast.
+- The project is ready for the next expansion decision.
+
+## Current Next Scope
+
+The next implementation task should be Milestone 0: create the custom C++ engine bootstrap with CMake, Engine/Game separation, a window, main loop, logging, timing, input polling, blank screen, debug overlay placeholder, and build/run documentation.
+
