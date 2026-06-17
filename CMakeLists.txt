@@ -54,6 +54,9 @@ add_library(GameRuntime STATIC
     Game/Source/Crafting/CraftingService.cpp
     Game/Source/Crafting/RecipeDatabase.cpp
     Game/Source/Crafting/RecipeDefinition.cpp
+    Game/Source/Debug/DebugFormatting.cpp
+    Game/Source/Debug/DebugHelp.cpp
+    Game/Source/Debug/DebugMessageLog.cpp
     Game/Source/Interactable.cpp
     Game/Source/Inventory/Hotbar.cpp
     Game/Source/Inventory/Inventory.cpp

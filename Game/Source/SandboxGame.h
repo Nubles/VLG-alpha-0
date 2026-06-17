@@ -8,6 +8,7 @@
 #include "Game/Source/Building/BuildPlacementController.h"
 #include "Game/Source/Combat/PlayerCombat.h"
 #include "Game/Source/Crafting/RecipeDatabase.h"
+#include "Game/Source/Debug/DebugMessageLog.h"
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Interactable.h"
@@ -38,6 +39,7 @@ private:
     void UpdateBuildPlacement(const rw::input::InputState& input);
     void UpdateCombatAndEnemies(float deltaSeconds, const rw::input::InputState& input);
     void UpdateSaveLoad(const rw::input::InputState& input);
+    void UpdateDebugHelp(const rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
     void CraftDebugRecipe(const std::string& recipeId);
     void InteractWithRealmFracture();
@@ -51,6 +53,9 @@ private:
     void SyncBuildPreview();
     void AddPlacedBuildable(const PlacedBuildable& placed);
     std::string SelectedBuildableName() const;
+    std::string TargetName() const;
+    std::string ObjectiveStatus() const;
+    void PushDebugMessage(const std::string& message);
     void GatherTargetNode(GatherableNode& node);
     void AddGatherableNode(const GatherableNode& node, const rw::math::Vec3& color);
     std::string InventorySummary() const;
@@ -66,6 +71,7 @@ private:
     PlayerCombat m_playerCombat;
     ProgressionState m_progression;
     ObjectiveState m_objectiveState;
+    DebugMessageLog m_messages { 4 };
     Inventory m_inventory;
     Hotbar m_hotbar;
     std::vector<Interactable> m_interactables;

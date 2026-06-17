@@ -4,6 +4,8 @@
 #include "Game/Source/AI/EnemyBrain.h"
 #include "Game/Source/Biomes/BiomeLayoutBuilder.h"
 #include "Game/Source/Crafting/CraftingService.h"
+#include "Game/Source/Debug/DebugFormatting.h"
+#include "Game/Source/Debug/DebugHelp.h"
 #include "Game/Source/Objectives/ShrineObjective.h"
 #include "Game/Source/Progression/ProgressionFlag.h"
 #include "Game/Source/SaveLoad/SaveGameService.h"
@@ -35,6 +37,7 @@ void SandboxGame::OnUpdate(float deltaSeconds, const rw::input::InputState& inpu
     UpdateBuildPlacement(input);
     UpdateCombatAndEnemies(deltaSeconds, input);
     UpdateSaveLoad(input);
+    UpdateDebugHelp(input);
 }
 
 void SandboxGame::OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window)
@@ -45,55 +48,20 @@ void SandboxGame::OnRender(rw::renderer::Renderer& renderer, rw::platform::Windo
 std::string SandboxGame::DebugTitle() const
 {
     std::ostringstream text;
-    text << "health " << std::fixed << std::setprecision(0) << m_player.Vitals().Health()
-         << " | stamina " << std::setprecision(0) << m_player.Vitals().Stamina()
-         << " | biome " << (m_currentBiome != nullptr ? m_currentBiome->displayName : "None")
-         << " | flags " << m_progression.Summary()
-         << " | build " << (m_buildPlacement.BuildModeActive() ? "On" : "Off")
-         << " " << SelectedBuildableName()
+    text << (m_currentBiome != nullptr ? m_currentBiome->displayName : "No Biome")
+         << " | HP " << std::fixed << std::setprecision(0) << m_player.Vitals().Health()
+         << " ST " << std::setprecision(0) << m_player.Vitals().Stamina()
+         << " | target " << TargetName()
+         << " | inv " << InventorySummary()
          << " | enemy " << ToString(m_realmWisp.state)
          << " " << std::setprecision(0) << m_realmWisp.health.Health()
-         << " | target ";
+         << " | obj " << ObjectiveStatus();
 
-    if (m_currentGatherableIndex >= 0) {
-        text << m_gatherableNodes[static_cast<size_t>(m_currentGatherableIndex)].name;
-    } else {
-        text << (m_currentTarget != nullptr ? m_currentTarget->name : "None");
+    if (m_buildPlacement.BuildModeActive()) {
+        text << " | build " << SelectedBuildableName();
     }
 
-    if (!m_lastInteractionMessage.empty()) {
-        text << " | " << m_lastInteractionMessage;
-    }
-
-    text << " | inv " << InventorySummary();
-
-    if (!m_lastInventoryMessage.empty()) {
-        text << " | " << m_lastInventoryMessage;
-    }
-
-    if (!m_lastGatherMessage.empty()) {
-        text << " | " << m_lastGatherMessage;
-    }
-
-    if (!m_lastCraftMessage.empty()) {
-        text << " | " << m_lastCraftMessage;
-    }
-
-    if (!m_lastBuildMessage.empty()) {
-        text << " | " << m_lastBuildMessage;
-    }
-
-    if (!m_lastCombatMessage.empty()) {
-        text << " | " << m_lastCombatMessage;
-    }
-
-    if (!m_lastProgressionMessage.empty()) {
-        text << " | " << m_lastProgressionMessage;
-    }
-
-    if (!m_lastSaveMessage.empty()) {
-        text << " | " << m_lastSaveMessage;
-    }
+    text << " | msg " << m_messages.Summary();
 
     return text.str();
 }
@@ -146,11 +114,11 @@ void SandboxGame::UpdateInteractionTarget(const rw::input::InputState& input)
                 InteractWithRealmFracture();
             } else {
                 m_lastInteractionMessage = "Interacted: " + m_currentTarget->name;
-                rw::core::Logger::Info(m_currentTarget->debugMessage);
+                PushDebugMessage(m_currentTarget->debugMessage);
             }
         } else {
             m_lastInteractionMessage = "Interacted: None";
-            rw::core::Logger::Info("Interaction attempted with no target.");
+            PushDebugMessage("Interaction attempted with no target.");
         }
     }
 }
@@ -201,26 +169,29 @@ void SandboxGame::UpdateBuildPlacement(const rw::input::InputState& input)
     if (input.WasKeyPressed(rw::input::Key::B)) {
         m_buildPlacement.ToggleBuildMode();
         m_lastBuildMessage = m_buildPlacement.BuildModeActive() ? "Build mode on" : "Build mode off";
-        rw::core::Logger::Info(m_lastBuildMessage);
+        PushDebugMessage(m_lastBuildMessage);
     }
 
     if (input.WasKeyPressed(rw::input::Key::Backspace)) {
         m_buildPlacement.CancelBuildMode();
         m_lastBuildMessage = "Build mode cancelled";
-        rw::core::Logger::Info(m_lastBuildMessage);
+        PushDebugMessage(m_lastBuildMessage);
     }
 
     if (input.WasKeyPressed(rw::input::Key::One)) {
         m_buildPlacement.SelectBuildable("camp_marker");
         m_lastBuildMessage = "Selected Camp Marker";
+        PushDebugMessage(m_lastBuildMessage);
     }
     if (input.WasKeyPressed(rw::input::Key::Two)) {
         m_buildPlacement.SelectBuildable("workbench_stub");
         m_lastBuildMessage = "Selected Workbench Stub";
+        PushDebugMessage(m_lastBuildMessage);
     }
     if (input.WasKeyPressed(rw::input::Key::Three)) {
         m_buildPlacement.SelectBuildable("simple_wall");
         m_lastBuildMessage = "Selected Simple Wall";
+        PushDebugMessage(m_lastBuildMessage);
     }
 
     if (input.WasKeyPressed(rw::input::Key::Q)) {
@@ -237,7 +208,7 @@ void SandboxGame::UpdateBuildPlacement(const rw::input::InputState& input)
         const BuildPlacementResult result = m_buildPlacement.TryPlace(
             m_buildableDatabase, m_itemDatabase, m_inventory, m_placedBuildables);
         m_lastBuildMessage = result.message;
-        rw::core::Logger::Info(m_lastBuildMessage);
+        PushDebugMessage(m_lastBuildMessage);
         if (result.success) {
             AddPlacedBuildable(result.placed);
         }
@@ -268,7 +239,7 @@ void SandboxGame::UpdateCombatAndEnemies(float deltaSeconds, const rw::input::In
         } else {
             m_lastCombatMessage = "Attack missed";
         }
-        rw::core::Logger::Info(m_lastCombatMessage);
+        PushDebugMessage(m_lastCombatMessage);
     }
 
     const bool wasAlive = m_realmWisp.health.IsAlive();
@@ -282,12 +253,13 @@ void SandboxGame::UpdateCombatAndEnemies(float deltaSeconds, const rw::input::In
         EnemyLootResult loot = m_realmWisp.DropLoot(m_itemDatabase, m_inventory);
         if (!loot.message.empty()) {
             m_lastCombatMessage = loot.message;
-            rw::core::Logger::Info(m_lastCombatMessage);
+            PushDebugMessage(m_lastCombatMessage);
         }
     }
 
     if (!m_player.Vitals().IsAlive()) {
         m_lastCombatMessage = "Player down";
+        PushDebugMessage(m_lastCombatMessage);
     }
 
     SyncRealmWispVisual();
@@ -298,7 +270,7 @@ void SandboxGame::UpdateSaveLoad(const rw::input::InputState& input)
     if (input.WasKeyPressed(rw::input::Key::O)) {
         const SaveResult result = SaveGameService::SaveToFile(CaptureSaveData());
         m_lastSaveMessage = result.message;
-        rw::core::Logger::Info(m_lastSaveMessage);
+        PushDebugMessage(m_lastSaveMessage);
     }
 
     if (input.WasKeyPressed(rw::input::Key::P)) {
@@ -307,7 +279,14 @@ void SandboxGame::UpdateSaveLoad(const rw::input::InputState& input)
         if (result.success) {
             ApplySaveData(result.data);
         }
-        rw::core::Logger::Info(m_lastSaveMessage);
+        PushDebugMessage(m_lastSaveMessage);
+    }
+}
+
+void SandboxGame::UpdateDebugHelp(const rw::input::InputState& input)
+{
+    if (input.WasKeyPressed(rw::input::Key::H)) {
+        PushDebugMessage(DebugHelpText());
     }
 }
 
@@ -328,7 +307,7 @@ void SandboxGame::GatherTargetNode(GatherableNode& node)
         m_lastGatherMessage = drops.str();
     }
 
-    rw::core::Logger::Info(m_lastGatherMessage);
+    PushDebugMessage(m_lastGatherMessage);
 }
 
 void SandboxGame::AddGatherableNode(const GatherableNode& node, const rw::math::Vec3& color)
@@ -356,7 +335,7 @@ void SandboxGame::GrantDebugItem(const std::string& itemId, int quantity)
     }
 
     m_lastInventoryMessage = message.str();
-    rw::core::Logger::Info(m_lastInventoryMessage);
+    PushDebugMessage(m_lastInventoryMessage);
 
     for (int index = 0; index < static_cast<int>(m_inventory.Slots().size())
          && index < static_cast<int>(m_hotbar.Entries().size()); ++index) {
@@ -371,7 +350,7 @@ void SandboxGame::CraftDebugRecipe(const std::string& recipeId)
     const CraftingResult result = CraftingService::Craft(
         m_recipeDatabase, m_itemDatabase, m_progression, m_inventory, recipeId);
     m_lastCraftMessage = result.message;
-    rw::core::Logger::Info(m_lastCraftMessage);
+    PushDebugMessage(m_lastCraftMessage);
 
     for (int index = 0; index < static_cast<int>(m_inventory.Slots().size())
          && index < static_cast<int>(m_hotbar.Entries().size()); ++index) {
@@ -396,7 +375,7 @@ void SandboxGame::InteractWithRealmFracture()
     }
 
     UpdateRealmFractureVisual();
-    rw::core::Logger::Info(m_lastProgressionMessage);
+    PushDebugMessage(m_lastProgressionMessage);
 }
 
 void SandboxGame::ResetProgressionState()
@@ -410,7 +389,7 @@ void SandboxGame::ResetProgressionState()
         }
     }
     UpdateRealmFractureVisual();
-    rw::core::Logger::Info(m_lastProgressionMessage);
+    PushDebugMessage(m_lastProgressionMessage);
 }
 
 void SandboxGame::UpdateRealmFractureVisual()
@@ -472,6 +451,31 @@ std::string SandboxGame::SelectedBuildableName() const
     return selected != nullptr ? selected->displayName : "None";
 }
 
+std::string SandboxGame::TargetName() const
+{
+    if (m_currentGatherableIndex >= 0) {
+        return m_gatherableNodes[static_cast<size_t>(m_currentGatherableIndex)].name;
+    }
+    return m_currentTarget != nullptr ? m_currentTarget->name : "None";
+}
+
+std::string SandboxGame::ObjectiveStatus() const
+{
+    if (m_progression.HasFlag(kMistwoodFractureStabilized)) {
+        return "fracture stable";
+    }
+    if (m_progression.HasFlag(kMistwoodFractureDiscovered)) {
+        return "fracture found";
+    }
+    return "fracture unknown";
+}
+
+void SandboxGame::PushDebugMessage(const std::string& message)
+{
+    m_messages.Push(message);
+    rw::core::Logger::Info(message);
+}
+
 void SandboxGame::ResetRealmWisp()
 {
     m_realmWisp = EnemyAgent::CreateRealmWisp();
@@ -479,7 +483,7 @@ void SandboxGame::ResetRealmWisp()
         m_realmWisp.transform.position = { 1.2F, 0.7F, -5.0F };
     }
     m_lastCombatMessage = "Realm Wisp reset";
-    rw::core::Logger::Info(m_lastCombatMessage);
+    PushDebugMessage(m_lastCombatMessage);
     SyncRealmWispVisual();
 }
 
@@ -620,28 +624,7 @@ void SandboxGame::SyncRealmWispVisual()
 
 std::string SandboxGame::InventorySummary() const
 {
-    std::ostringstream summary;
-    bool wroteAny = false;
-
-    for (const ItemDefinition& definition : m_itemDatabase.Definitions()) {
-        const int quantity = m_inventory.TotalQuantity(definition.id);
-        if (quantity <= 0) {
-            continue;
-        }
-
-        if (wroteAny) {
-            summary << ", ";
-        }
-
-        summary << definition.id << ":" << quantity;
-        wroteAny = true;
-    }
-
-    if (!wroteAny) {
-        return "empty";
-    }
-
-    return summary.str();
+    return CompactInventorySummary(m_itemDatabase, m_inventory);
 }
 
 } // namespace rw::game
