@@ -27,7 +27,7 @@ jobs:
           cmake --build build --config Debug *> build-output.txt
           Get-Content build-output.txt
           if ($LASTEXITCODE -ne 0) {
-            Get-Content build-output.txt | ForEach-Object {
+            Get-Content build-output.txt | Select-Object -Last 80 | ForEach-Object {
               $line = $_.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
               Write-Output "::error::$line"
             }
