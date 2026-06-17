@@ -32,6 +32,8 @@ enum class Key {
     F8,
     F9,
     F10,
+    F11,
+    F12,
     Escape,
     Count
 };

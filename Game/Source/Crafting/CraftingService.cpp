@@ -3,12 +3,46 @@
 #include "Game/Source/Crafting/RecipeDatabase.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Items/ItemDatabase.h"
+#include "Game/Source/Progression/ProgressionState.h"
 
 namespace rw::game {
+
+namespace {
+
+CraftingResult CraftInternal(
+    const RecipeDatabase& recipes,
+    const ItemDatabase& items,
+    const ProgressionState* progression,
+    Inventory& inventory,
+    const std::string& recipeId);
+
+} // namespace
 
 CraftingResult CraftingService::Craft(
     const RecipeDatabase& recipes,
     const ItemDatabase& items,
+    Inventory& inventory,
+    const std::string& recipeId)
+{
+    return CraftInternal(recipes, items, nullptr, inventory, recipeId);
+}
+
+CraftingResult CraftingService::Craft(
+    const RecipeDatabase& recipes,
+    const ItemDatabase& items,
+    const ProgressionState& progression,
+    Inventory& inventory,
+    const std::string& recipeId)
+{
+    return CraftInternal(recipes, items, &progression, inventory, recipeId);
+}
+
+namespace {
+
+CraftingResult CraftInternal(
+    const RecipeDatabase& recipes,
+    const ItemDatabase& items,
+    const ProgressionState* progression,
     Inventory& inventory,
     const std::string& recipeId)
 {
@@ -20,6 +54,18 @@ CraftingResult CraftingService::Craft(
             0,
             CraftingFailureReason::UnknownRecipe,
             "Craft failed: unknown recipe " + recipeId,
+            0,
+        };
+    }
+
+    if (!recipe->unlockId.empty()
+        && (progression == nullptr || !progression->HasFlag(recipe->unlockId))) {
+        return {
+            false,
+            {},
+            0,
+            CraftingFailureReason::Locked,
+            "Craft failed: locked recipe " + recipe->id,
             0,
         };
     }
@@ -79,5 +125,7 @@ CraftingResult CraftingService::Craft(
         0,
     };
 }
+
+} // namespace
 
 } // namespace rw::game

@@ -15,6 +15,7 @@ ItemDatabase ItemDatabase::CreateStarterDatabase()
     database.AddDefinition({ "camp_bundle", "Camp Bundle", "A packed camp starter for later building tests.", ItemCategory::Tool, 10, 0 });
     database.AddDefinition({ "simple_meal", "Simple Meal", "Basic prepared food for future survival tests.", ItemCategory::Food, 20, 0 });
     database.AddDefinition({ "workbench_kit", "Workbench Kit", "A packed workbench kit for later station tests.", ItemCategory::Tool, 1, 0 });
+    database.AddDefinition({ "realm_anchor", "Realm Anchor", "A crude anchor of stabilized realm energy. It has no world function yet.", ItemCategory::Tool, 1, 0 });
     return database;
 }
 

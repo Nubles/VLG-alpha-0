@@ -12,6 +12,8 @@
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Interactable.h"
 #include "Game/Source/Items/ItemDatabase.h"
+#include "Game/Source/Objectives/ObjectiveState.h"
+#include "Game/Source/Progression/ProgressionState.h"
 #include "Game/Source/PlayerController.h"
 #include "Game/Source/Resources/GatherableNode.h"
 
@@ -36,6 +38,9 @@ private:
     void UpdateCombatAndEnemies(float deltaSeconds, const rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
     void CraftDebugRecipe(const std::string& recipeId);
+    void InteractWithRealmFracture();
+    void ResetProgressionState();
+    void UpdateRealmFractureVisual();
     void ResetRealmWisp();
     void SyncRealmWispVisual();
     void LoadMistwoodHollow();
@@ -55,6 +60,8 @@ private:
     BuildableDatabase m_buildableDatabase;
     BuildPlacementController m_buildPlacement;
     PlayerCombat m_playerCombat;
+    ProgressionState m_progression;
+    ObjectiveState m_objectiveState;
     Inventory m_inventory;
     Hotbar m_hotbar;
     std::vector<Interactable> m_interactables;
@@ -69,6 +76,7 @@ private:
     std::string m_lastCraftMessage;
     std::string m_lastBuildMessage;
     std::string m_lastCombatMessage;
+    std::string m_lastProgressionMessage;
 };
 
 } // namespace rw::game

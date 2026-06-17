@@ -1,5 +1,7 @@
 #include "Game/Source/Crafting/RecipeDatabase.h"
 
+#include "Game/Source/Progression/ProgressionFlag.h"
+
 #include <utility>
 
 namespace rw::game {
@@ -51,6 +53,20 @@ RecipeDatabase RecipeDatabase::CreateStarterRecipes()
             { "wood", 10 },
             { "stone", 4 },
         },
+    });
+
+    database.AddRecipe({
+        "realm_anchor",
+        "Realm Anchor",
+        "realm_anchor",
+        1,
+        {
+            { "workbench_kit", 1 },
+            { "fiber", 5 },
+            { "stone", 5 },
+        },
+        {},
+        kRecipeRealmAnchorUnlocked,
     });
 
     return database;

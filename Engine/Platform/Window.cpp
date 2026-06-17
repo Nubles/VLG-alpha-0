@@ -203,6 +203,8 @@ void Window::PollEvents(rw::input::InputState& input)
     input.SetKeyDown(rw::input::Key::F8, (GetAsyncKeyState(VK_F8) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::F9, (GetAsyncKeyState(VK_F9) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::F10, (GetAsyncKeyState(VK_F10) & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::F11, (GetAsyncKeyState(VK_F11) & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::F12, (GetAsyncKeyState(VK_F12) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Up, (GetAsyncKeyState(VK_UP) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Down, (GetAsyncKeyState(VK_DOWN) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Left, (GetAsyncKeyState(VK_LEFT) & 0x8000) != 0);

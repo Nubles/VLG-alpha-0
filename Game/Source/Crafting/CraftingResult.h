@@ -9,7 +9,8 @@ enum class CraftingFailureReason {
     UnknownRecipe,
     MissingIngredient,
     MissingOutputItem,
-    InventoryFull
+    InventoryFull,
+    Locked
 };
 
 struct CraftingResult {

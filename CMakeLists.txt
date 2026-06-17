@@ -59,8 +59,12 @@ add_library(GameRuntime STATIC
     Game/Source/Inventory/Inventory.cpp
     Game/Source/Items/ItemDatabase.cpp
     Game/Source/Items/ItemDefinition.cpp
+    Game/Source/Objectives/ObjectiveDefinition.cpp
+    Game/Source/Objectives/ObjectiveState.cpp
+    Game/Source/Objectives/ShrineObjective.cpp
     Game/Source/PlayerController.cpp
     Game/Source/PlayerVitals.cpp
+    Game/Source/Progression/ProgressionState.cpp
     Game/Source/Resources/DropTable.cpp
     Game/Source/Resources/GatherableNode.cpp
     Game/Source/SandboxGame.cpp

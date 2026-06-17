@@ -11,7 +11,10 @@
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Items/ItemDatabase.h"
+#include "Game/Source/Objectives/ShrineObjective.h"
 #include "Game/Source/PlayerVitals.h"
+#include "Game/Source/Progression/ProgressionFlag.h"
+#include "Game/Source/Progression/ProgressionState.h"
 #include "Game/Source/Resources/GatherableNode.h"
 
 #include <cassert>
@@ -62,13 +65,22 @@ int main()
     assert(database.FindById("camp_bundle") != nullptr);
     assert(database.FindById("simple_meal") != nullptr);
     assert(database.FindById("workbench_kit") != nullptr);
+    assert(database.FindById("realm_anchor") != nullptr);
 
     const rw::game::RecipeDatabase recipes = rw::game::RecipeDatabase::CreateStarterRecipes();
     assert(recipes.FindById("primitive_tool") != nullptr);
     assert(recipes.FindById("camp_bundle") != nullptr);
     assert(recipes.FindById("simple_meal") != nullptr);
     assert(recipes.FindById("workbench_kit") != nullptr);
+    assert(recipes.FindById("realm_anchor") != nullptr);
     assert(recipes.FindById("missing_recipe") == nullptr);
+
+    rw::game::ProgressionState progression;
+    assert(!progression.HasFlag("unknown_flag"));
+    progression.SetFlag(rw::game::kMistwoodFractureDiscovered);
+    assert(progression.HasFlag(rw::game::kMistwoodFractureDiscovered));
+    progression.Clear();
+    assert(!progression.HasFlag(rw::game::kMistwoodFractureDiscovered));
 
     const rw::game::BuildableDatabase buildables = rw::game::BuildableDatabase::CreateStarterBuildables();
     assert(buildables.FindById("camp_marker") != nullptr);
@@ -243,6 +255,55 @@ int main()
     assert(outputBlockedInventory.TotalQuantity("wood") == 50);
     assert(outputBlockedInventory.TotalQuantity("fiber") == 50);
     assert(outputBlockedInventory.TotalQuantity("camp_bundle") == 0);
+
+    rw::game::ProgressionState objectiveProgression;
+    rw::game::ObjectiveState objectiveState;
+    rw::game::Inventory objectiveMissingInventory(8);
+    assert(objectiveMissingInventory.AddItem(database, "camp_bundle", 1) == 0);
+    rw::game::ObjectiveResult objectiveMissing = rw::game::ShrineObjective::TryCompleteMistwoodFracture(
+        objectiveMissingInventory, objectiveProgression, objectiveState);
+    assert(!objectiveMissing.success);
+    assert(objectiveMissing.failureReason == rw::game::ObjectiveFailureReason::MissingRequirement);
+    assert(objectiveMissingInventory.TotalQuantity("camp_bundle") == 1);
+    assert(objectiveProgression.HasFlag(rw::game::kMistwoodFractureDiscovered));
+    assert(!objectiveProgression.HasFlag(rw::game::kMistwoodShrineCompleted));
+
+    rw::game::ProgressionState completeProgression;
+    rw::game::ObjectiveState completeObjectiveState;
+    rw::game::Inventory objectiveInventory(8);
+    assert(objectiveInventory.AddItem(database, "camp_bundle", 1) == 0);
+    assert(objectiveInventory.AddItem(database, "primitive_tool", 1) == 0);
+    assert(objectiveInventory.AddItem(database, "fiber", 3) == 0);
+    rw::game::ObjectiveResult objectiveComplete = rw::game::ShrineObjective::TryCompleteMistwoodFracture(
+        objectiveInventory, completeProgression, completeObjectiveState);
+    assert(objectiveComplete.success);
+    assert(objectiveInventory.TotalQuantity("camp_bundle") == 0);
+    assert(objectiveInventory.TotalQuantity("fiber") == 0);
+    assert(objectiveInventory.TotalQuantity("primitive_tool") == 1);
+    assert(completeProgression.HasFlag(rw::game::kMistwoodShrineCompleted));
+    assert(completeProgression.HasFlag(rw::game::kMistwoodFractureStabilized));
+    assert(completeProgression.HasFlag(rw::game::kRecipeRealmAnchorUnlocked));
+
+    rw::game::Inventory lockedAnchorInventory(8);
+    assert(lockedAnchorInventory.AddItem(database, "workbench_kit", 1) == 0);
+    assert(lockedAnchorInventory.AddItem(database, "fiber", 5) == 0);
+    assert(lockedAnchorInventory.AddItem(database, "stone", 5) == 0);
+    rw::game::CraftingResult lockedAnchor = rw::game::CraftingService::Craft(
+        recipes, database, lockedAnchorInventory, "realm_anchor");
+    assert(!lockedAnchor.success);
+    assert(lockedAnchor.failureReason == rw::game::CraftingFailureReason::Locked);
+    assert(lockedAnchorInventory.TotalQuantity("workbench_kit") == 1);
+
+    rw::game::ProgressionState anchorProgression;
+    anchorProgression.SetFlag(rw::game::kRecipeRealmAnchorUnlocked);
+    rw::game::Inventory unlockedAnchorInventory(8);
+    assert(unlockedAnchorInventory.AddItem(database, "workbench_kit", 1) == 0);
+    assert(unlockedAnchorInventory.AddItem(database, "fiber", 5) == 0);
+    assert(unlockedAnchorInventory.AddItem(database, "stone", 5) == 0);
+    rw::game::CraftingResult unlockedAnchor = rw::game::CraftingService::Craft(
+        recipes, database, anchorProgression, unlockedAnchorInventory, "realm_anchor");
+    assert(unlockedAnchor.success);
+    assert(unlockedAnchorInventory.TotalQuantity("realm_anchor") == 1);
 
     rw::scene::Camera buildCamera;
     buildCamera.position = { 0.0F, 1.6F, 0.0F };

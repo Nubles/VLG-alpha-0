@@ -4,6 +4,8 @@
 #include "Game/Source/AI/EnemyBrain.h"
 #include "Game/Source/Biomes/BiomeLayoutBuilder.h"
 #include "Game/Source/Crafting/CraftingService.h"
+#include "Game/Source/Objectives/ShrineObjective.h"
+#include "Game/Source/Progression/ProgressionFlag.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -44,6 +46,7 @@ std::string SandboxGame::DebugTitle() const
     text << "health " << std::fixed << std::setprecision(0) << m_player.Vitals().Health()
          << " | stamina " << std::setprecision(0) << m_player.Vitals().Stamina()
          << " | biome " << (m_currentBiome != nullptr ? m_currentBiome->displayName : "None")
+         << " | flags " << m_progression.Summary()
          << " | build " << (m_buildPlacement.BuildModeActive() ? "On" : "Off")
          << " " << SelectedBuildableName()
          << " | enemy " << ToString(m_realmWisp.state)
@@ -80,6 +83,10 @@ std::string SandboxGame::DebugTitle() const
 
     if (!m_lastCombatMessage.empty()) {
         text << " | " << m_lastCombatMessage;
+    }
+
+    if (!m_lastProgressionMessage.empty()) {
+        text << " | " << m_lastProgressionMessage;
     }
 
     return text.str();
@@ -129,8 +136,12 @@ void SandboxGame::UpdateInteractionTarget(const rw::input::InputState& input)
         if (m_currentGatherableIndex >= 0) {
             GatherTargetNode(m_gatherableNodes[static_cast<size_t>(m_currentGatherableIndex)]);
         } else if (m_currentTarget != nullptr) {
-            m_lastInteractionMessage = "Interacted: " + m_currentTarget->name;
-            rw::core::Logger::Info(m_currentTarget->debugMessage);
+            if (m_currentTarget->name == "Realm Fracture") {
+                InteractWithRealmFracture();
+            } else {
+                m_lastInteractionMessage = "Interacted: " + m_currentTarget->name;
+                rw::core::Logger::Info(m_currentTarget->debugMessage);
+            }
         } else {
             m_lastInteractionMessage = "Interacted: None";
             rw::core::Logger::Info("Interaction attempted with no target.");
@@ -170,6 +181,12 @@ void SandboxGame::UpdateDebugCrafting(const rw::input::InputState& input)
     }
     if (input.WasKeyPressed(rw::input::Key::F9)) {
         CraftDebugRecipe("workbench_kit");
+    }
+    if (input.WasKeyPressed(rw::input::Key::F11)) {
+        CraftDebugRecipe("realm_anchor");
+    }
+    if (input.WasKeyPressed(rw::input::Key::F12)) {
+        ResetProgressionState();
     }
 }
 
@@ -328,7 +345,7 @@ void SandboxGame::GrantDebugItem(const std::string& itemId, int quantity)
 void SandboxGame::CraftDebugRecipe(const std::string& recipeId)
 {
     const CraftingResult result = CraftingService::Craft(
-        m_recipeDatabase, m_itemDatabase, m_inventory, recipeId);
+        m_recipeDatabase, m_itemDatabase, m_progression, m_inventory, recipeId);
     m_lastCraftMessage = result.message;
     rw::core::Logger::Info(m_lastCraftMessage);
 
@@ -337,6 +354,56 @@ void SandboxGame::CraftDebugRecipe(const std::string& recipeId)
         if (!m_inventory.Slots()[static_cast<size_t>(index)].IsEmpty()) {
             m_hotbar.AssignSlot(index, index);
         }
+    }
+}
+
+void SandboxGame::InteractWithRealmFracture()
+{
+    ObjectiveResult result = ShrineObjective::TryCompleteMistwoodFracture(
+        m_inventory, m_progression, m_objectiveState);
+    m_lastInteractionMessage = "Interacted: Realm Fracture";
+    m_lastProgressionMessage = result.message;
+
+    for (Interactable& interactable : m_interactables) {
+        if (interactable.name == "Realm Fracture"
+            && m_progression.HasFlag(kMistwoodFractureStabilized)) {
+            interactable.debugMessage = "The fracture steadies into a calm, silver-blue shimmer.";
+        }
+    }
+
+    UpdateRealmFractureVisual();
+    rw::core::Logger::Info(m_lastProgressionMessage);
+}
+
+void SandboxGame::ResetProgressionState()
+{
+    m_progression.Clear();
+    m_objectiveState.Reset();
+    m_lastProgressionMessage = "Progression reset";
+    for (Interactable& interactable : m_interactables) {
+        if (interactable.name == "Realm Fracture") {
+            interactable.debugMessage = "The fracture shimmers, but it is not stable enough to enter.";
+        }
+    }
+    UpdateRealmFractureVisual();
+    rw::core::Logger::Info(m_lastProgressionMessage);
+}
+
+void SandboxGame::UpdateRealmFractureVisual()
+{
+    for (rw::scene::SceneObject& object : m_scene.MutableObjects()) {
+        if (object.name != "Realm Fracture") {
+            continue;
+        }
+
+        if (m_progression.HasFlag(kMistwoodFractureStabilized)) {
+            object.color = { 0.65F, 0.82F, 0.95F };
+            object.transform.scale = { 1.1F, 2.5F, 0.45F };
+        } else {
+            object.color = { 0.35F, 0.45F, 0.95F };
+            object.transform.scale = { 1.0F, 2.8F, 0.35F };
+        }
+        return;
     }
 }
 
