@@ -95,6 +95,15 @@ add_test(NAME EngineCoreTests COMMAND EngineCoreTests)
 
 add_executable(GameCoreTests
     Tests/GameCoreTests.cpp
+    Tests/Game/TestBiomes.cpp
+    Tests/Game/TestBuilding.cpp
+    Tests/Game/TestCombat.cpp
+    Tests/Game/TestCrafting.cpp
+    Tests/Game/TestDebug.cpp
+    Tests/Game/TestGathering.cpp
+    Tests/Game/TestInventory.cpp
+    Tests/Game/TestProgressionObjectives.cpp
+    Tests/Game/TestSaveLoad.cpp
 )
 
 target_link_libraries(GameCoreTests PRIVATE GameRuntime)

@@ -216,3 +216,19 @@ Remaining from the original highest-priority list:
 - Consider splitting `GameCoreTests.cpp` by domain.
 - Improve objective requirement feedback.
 - Start minimal data loading only after the stabilisation work is complete.
+
+## Stabilisation Pass 2 Result
+
+Completed after this review:
+
+- Split `GameCoreTests` into domain-oriented source files under `Tests/Game` while keeping a single CI executable.
+- Added `Docs/QA/VerticalSliceManualTest.md` with the current manual happy path, save/load checks, expected failure checks, and reporting guidance.
+- Improved Realm Fracture missing-requirement feedback so it lists all requirements, exact missing quantities, and marks `primitive_tool` as required but kept.
+- Added focused objective feedback assertions while preserving existing progression, inventory, build, combat, biome, gather, debug, and save/load coverage.
+- Added `Docs/Systems/VerticalSliceStabilisationPass2.md`.
+
+Remaining deferred items:
+
+- Continue extracting runtime coordination out of `SandboxGame` only when it stays low risk.
+- Start minimal data loading only after stabilisation work is complete.
+- Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.

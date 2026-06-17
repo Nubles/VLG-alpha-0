@@ -4,11 +4,40 @@
 #include "Game/Source/Progression/ProgressionFlag.h"
 #include "Game/Source/Progression/ProgressionState.h"
 
+#include <cstddef>
+#include <sstream>
+#include <string>
+#include <vector>
+
 namespace rw::game {
 
 namespace {
 
 constexpr const char* kObjectiveId = "mistwood_fracture_shrine";
+
+std::string RequirementText(const ObjectiveRequirement& requirement)
+{
+    std::ostringstream text;
+    text << requirement.itemId << " x" << requirement.quantity;
+    if (requirement.consumeOnCompletion) {
+        text << " consumed";
+    } else {
+        text << " required, kept";
+    }
+    return text.str();
+}
+
+std::string JoinTexts(const std::vector<std::string>& texts)
+{
+    std::ostringstream joined;
+    for (std::size_t index = 0; index < texts.size(); ++index) {
+        if (index > 0) {
+            joined << ", ";
+        }
+        joined << texts[index];
+    }
+    return joined.str();
+}
 
 } // namespace
 
@@ -19,10 +48,36 @@ ObjectiveDefinition ShrineObjective::CreateMistwoodFractureObjective()
         "Stabilise the Mistwood Fracture",
         {
             { "camp_bundle", 1, true },
-            { "primitive_tool", 1, false },
             { "fiber", 3, true },
+            { "primitive_tool", 1, false },
         },
     };
+}
+
+std::string ShrineObjective::BuildMistwoodFractureRequirementMessage(const Inventory& inventory)
+{
+    const ObjectiveDefinition objective = CreateMistwoodFractureObjective();
+    std::vector<std::string> requirementTexts;
+    std::vector<std::string> missingTexts;
+
+    for (const ObjectiveRequirement& requirement : objective.requirements) {
+        requirementTexts.push_back(RequirementText(requirement));
+        const int currentQuantity = inventory.TotalQuantity(requirement.itemId);
+        if (currentQuantity < requirement.quantity) {
+            std::ostringstream missing;
+            missing << requirement.itemId << " x" << (requirement.quantity - currentQuantity);
+            missingTexts.push_back(missing.str());
+        }
+    }
+
+    std::ostringstream message;
+    message << "Requirements: " << JoinTexts(requirementTexts);
+    if (!missingTexts.empty()) {
+        message << ". Missing: " << JoinTexts(missingTexts);
+    } else {
+        message << ". Ready.";
+    }
+    return message.str();
 }
 
 ObjectiveResult ShrineObjective::TryCompleteMistwoodFracture(
@@ -47,7 +102,7 @@ ObjectiveResult ShrineObjective::TryCompleteMistwoodFracture(
             return {
                 false,
                 ObjectiveFailureReason::MissingRequirement,
-                "Missing requirement: " + requirement.itemId,
+                BuildMistwoodFractureRequirementMessage(inventory),
             };
         }
     }
