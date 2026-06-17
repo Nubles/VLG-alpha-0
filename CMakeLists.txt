@@ -53,6 +53,7 @@ target_link_libraries(RealmboundWilds PRIVATE EngineRuntime)
 
 add_executable(EngineCoreTests
     Game/Source/Interactable.cpp
+    Game/Source/PlayerController.cpp
     Game/Source/PlayerVitals.cpp
     Tests/EngineCoreTests.cpp
 )

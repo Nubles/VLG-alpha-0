@@ -22,7 +22,17 @@ jobs:
         run: cmake -S . -B build
 
       - name: Build
-        run: cmake --build build --config Debug
+        shell: pwsh
+        run: |
+          cmake --build build --config Debug
+          if ($LASTEXITCODE -ne 0) {
+            throw "CMake build failed with exit code $LASTEXITCODE"
+          }
 
       - name: Run EngineCoreTests
-        run: .\build\Debug\EngineCoreTests.exe
+        shell: pwsh
+        run: |
+          .\build\Debug\EngineCoreTests.exe
+          if ($LASTEXITCODE -ne 0) {
+            throw "EngineCoreTests failed with exit code $LASTEXITCODE"
+          }
