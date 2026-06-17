@@ -36,7 +36,7 @@ target_include_directories(EngineRuntime
 
 if(WIN32)
     target_compile_definitions(EngineRuntime PRIVATE RW_PLATFORM_WINDOWS=1)
-    target_link_libraries(EngineRuntime PRIVATE user32 gdi32 opengl32)
+    target_link_libraries(EngineRuntime PUBLIC user32 gdi32 opengl32)
 else()
     message(FATAL_ERROR "Milestone 0 currently provides a native Win32 platform backend only.")
 endif()
