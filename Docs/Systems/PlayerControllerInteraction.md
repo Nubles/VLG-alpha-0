@@ -52,6 +52,13 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Debug
 ```
 
+CI uses the same command shape without forcing a generator:
+
+```powershell
+cmake -S . -B build
+cmake --build build --config Debug
+```
+
 ## Run
 
 ```powershell
@@ -83,4 +90,3 @@ Manual checks:
 - Terrain generation or procedural worlds.
 - Physics-engine raycasts.
 - Final player movement, mouse look, UI, or gameplay balance.
-

@@ -10,6 +10,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+enable_testing()
+
 add_library(EngineRuntime STATIC
     Engine/Core/Application.cpp
     Engine/Core/Clock.cpp
@@ -56,3 +58,5 @@ add_executable(EngineCoreTests
 )
 
 target_link_libraries(EngineCoreTests PRIVATE EngineRuntime)
+
+add_test(NAME EngineCoreTests COMMAND EngineCoreTests)

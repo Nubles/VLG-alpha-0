@@ -41,10 +41,10 @@ cmake -S . -B build
 cmake --build build
 ```
 
-For the same Windows generator used by CI:
+For the same Windows command shape used by CI:
 
 ```powershell
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake -S . -B build
 cmake --build build --config Debug
 ```
 
