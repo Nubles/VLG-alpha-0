@@ -41,23 +41,25 @@ else()
     message(FATAL_ERROR "Milestone 0 currently provides a native Win32 platform backend only.")
 endif()
 
-add_executable(RealmboundWilds
-    Game/Source/Main.cpp
+add_library(GameRuntime STATIC
     Game/Source/Interactable.cpp
     Game/Source/PlayerController.cpp
     Game/Source/PlayerVitals.cpp
     Game/Source/SandboxGame.cpp
 )
 
-target_link_libraries(RealmboundWilds PRIVATE EngineRuntime)
+target_link_libraries(GameRuntime PUBLIC EngineRuntime)
+
+add_executable(RealmboundWilds
+    Game/Source/Main.cpp
+)
+
+target_link_libraries(RealmboundWilds PRIVATE GameRuntime)
 
 add_executable(EngineCoreTests
-    Game/Source/Interactable.cpp
-    Game/Source/PlayerController.cpp
-    Game/Source/PlayerVitals.cpp
     Tests/EngineCoreTests.cpp
 )
 
-target_link_libraries(EngineCoreTests PRIVATE EngineRuntime)
+target_link_libraries(EngineCoreTests PRIVATE EngineRuntime GameRuntime)
 
 add_test(NAME EngineCoreTests COMMAND EngineCoreTests)
