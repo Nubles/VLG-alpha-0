@@ -27,7 +27,17 @@ jobs:
           cmake --build build --config Debug *> build-output.txt
           Get-Content build-output.txt
           if ($LASTEXITCODE -ne 0) {
-            Get-Content build-output.txt | Select-Object -Last 80 | ForEach-Object {
+            $errorLines = Get-Content build-output.txt | Where-Object {
+              $_ -match 'error C[0-9]+' -or
+              $_ -match 'fatal error' -or
+              $_ -match 'LNK[0-9]+' -or
+              $_ -match ': error :' -or
+              $_ -match 'LINK : fatal error'
+            }
+            if (-not $errorLines) {
+              $errorLines = Get-Content build-output.txt | Select-Object -Last 10
+            }
+            $errorLines | ForEach-Object {
               $line = $_.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
               Write-Output "::error::$line"
             }
