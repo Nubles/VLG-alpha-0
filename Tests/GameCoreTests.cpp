@@ -9,6 +9,7 @@
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Items/ItemDatabase.h"
+#include "Game/Source/PlayerVitals.h"
 #include "Game/Source/Resources/GatherableNode.h"
 
 #include <cassert>
