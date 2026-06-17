@@ -57,4 +57,19 @@ bool PlayerVitals::IsSprinting() const
     return m_isSprinting;
 }
 
+void PlayerVitals::ApplyDamage(float damage)
+{
+    m_health = std::max(0.0F, m_health - std::max(0.0F, damage));
+}
+
+void PlayerVitals::Heal(float amount)
+{
+    m_health = std::min(100.0F, m_health + std::max(0.0F, amount));
+}
+
+bool PlayerVitals::IsAlive() const
+{
+    return m_health > 0.0F;
+}
+
 } // namespace rw::game

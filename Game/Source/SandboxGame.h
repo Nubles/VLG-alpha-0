@@ -2,8 +2,10 @@
 
 #include "Engine/Core/GameLayer.h"
 #include "Engine/Scene/Scene.h"
+#include "Game/Source/AI/EnemyAgent.h"
 #include "Game/Source/Building/BuildableDatabase.h"
 #include "Game/Source/Building/BuildPlacementController.h"
+#include "Game/Source/Combat/PlayerCombat.h"
 #include "Game/Source/Crafting/RecipeDatabase.h"
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
@@ -30,8 +32,11 @@ private:
     void UpdateDebugItemGrants(const rw::input::InputState& input);
     void UpdateDebugCrafting(const rw::input::InputState& input);
     void UpdateBuildPlacement(const rw::input::InputState& input);
+    void UpdateCombatAndEnemies(float deltaSeconds, const rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
     void CraftDebugRecipe(const std::string& recipeId);
+    void ResetRealmWisp();
+    void SyncRealmWispVisual();
     void SyncBuildPreview();
     void AddPlacedBuildable(const PlacedBuildable& placed);
     std::string SelectedBuildableName() const;
@@ -45,11 +50,13 @@ private:
     RecipeDatabase m_recipeDatabase;
     BuildableDatabase m_buildableDatabase;
     BuildPlacementController m_buildPlacement;
+    PlayerCombat m_playerCombat;
     Inventory m_inventory;
     Hotbar m_hotbar;
     std::vector<Interactable> m_interactables;
     std::vector<GatherableNode> m_gatherableNodes;
     std::vector<PlacedBuildable> m_placedBuildables;
+    EnemyAgent m_realmWisp;
     const Interactable* m_currentTarget = nullptr;
     int m_currentGatherableIndex = -1;
     std::string m_lastInteractionMessage;
@@ -57,6 +64,7 @@ private:
     std::string m_lastGatherMessage;
     std::string m_lastCraftMessage;
     std::string m_lastBuildMessage;
+    std::string m_lastCombatMessage;
 };
 
 } // namespace rw::game

@@ -10,6 +10,9 @@ public:
     float Stamina() const;
     bool CanSprint() const;
     bool IsSprinting() const;
+    void ApplyDamage(float damage);
+    void Heal(float amount);
+    bool IsAlive() const;
 
 private:
     float m_health = 100.0F;

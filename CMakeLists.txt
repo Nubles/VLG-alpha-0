@@ -42,8 +42,12 @@ else()
 endif()
 
 add_library(GameRuntime STATIC
+    Game/Source/AI/EnemyAgent.cpp
+    Game/Source/AI/EnemyBrain.cpp
     Game/Source/Building/BuildableDatabase.cpp
     Game/Source/Building/BuildPlacementController.cpp
+    Game/Source/Combat/Damageable.cpp
+    Game/Source/Combat/PlayerCombat.cpp
     Game/Source/Crafting/CraftingService.cpp
     Game/Source/Crafting/RecipeDatabase.cpp
     Game/Source/Crafting/RecipeDefinition.cpp

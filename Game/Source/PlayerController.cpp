@@ -70,4 +70,9 @@ const PlayerVitals& PlayerController::Vitals() const
     return m_vitals;
 }
 
+PlayerVitals& PlayerController::Vitals()
+{
+    return m_vitals;
+}
+
 } // namespace rw::game

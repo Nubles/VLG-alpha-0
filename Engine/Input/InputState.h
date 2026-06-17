@@ -11,6 +11,7 @@ enum class Key {
     S,
     D,
     B,
+    C,
     Q,
     R,
     Up,
@@ -30,6 +31,7 @@ enum class Key {
     F7,
     F8,
     F9,
+    F10,
     Escape,
     Count
 };

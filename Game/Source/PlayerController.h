@@ -14,6 +14,7 @@ public:
 
     const rw::scene::Camera& Camera() const;
     const PlayerVitals& Vitals() const;
+    PlayerVitals& Vitals();
 
 private:
     rw::scene::Camera m_camera;

@@ -1,6 +1,7 @@
 #include "Game/Source/SandboxGame.h"
 
 #include "Engine/Core/Logger.h"
+#include "Game/Source/AI/EnemyBrain.h"
 #include "Game/Source/Crafting/CraftingService.h"
 
 #include <algorithm>
@@ -15,6 +16,7 @@ SandboxGame::SandboxGame()
     , m_buildableDatabase(BuildableDatabase::CreateStarterBuildables())
     , m_inventory(16)
     , m_hotbar(8)
+    , m_realmWisp(EnemyAgent::CreateRealmWisp())
 {
     rw::scene::SceneObject grid;
     grid.name = "Milestone 1 Debug Grid";
@@ -34,6 +36,12 @@ SandboxGame::SandboxGame()
     buildPreview.transform.scale = { 0.0F, 0.0F, 0.0F };
     buildPreview.color = { 0.30F, 0.85F, 0.65F };
     m_scene.AddObject(buildPreview);
+
+    rw::scene::SceneObject wispVisual;
+    wispVisual.name = m_realmWisp.name;
+    wispVisual.transform = m_realmWisp.transform;
+    wispVisual.color = { 0.75F, 0.30F, 0.95F };
+    m_scene.AddObject(wispVisual);
 
     Interactable ancientStone;
     ancientStone.name = "Ancient Stone";
@@ -98,6 +106,7 @@ void SandboxGame::OnUpdate(float deltaSeconds, const rw::input::InputState& inpu
     UpdateDebugItemGrants(input);
     UpdateDebugCrafting(input);
     UpdateBuildPlacement(input);
+    UpdateCombatAndEnemies(deltaSeconds, input);
 }
 
 void SandboxGame::OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window)
@@ -112,6 +121,8 @@ std::string SandboxGame::DebugTitle() const
          << " | stamina " << std::setprecision(0) << m_player.Vitals().Stamina()
          << " | build " << (m_buildPlacement.BuildModeActive() ? "On" : "Off")
          << " " << SelectedBuildableName()
+         << " | enemy " << ToString(m_realmWisp.state)
+         << " " << std::setprecision(0) << m_realmWisp.health.Health()
          << " | target ";
 
     if (m_currentGatherableIndex >= 0) {
@@ -140,6 +151,10 @@ std::string SandboxGame::DebugTitle() const
 
     if (!m_lastBuildMessage.empty()) {
         text << " | " << m_lastBuildMessage;
+    }
+
+    if (!m_lastCombatMessage.empty()) {
+        text << " | " << m_lastCombatMessage;
     }
 
     return text.str();
@@ -281,6 +296,55 @@ void SandboxGame::UpdateBuildPlacement(const rw::input::InputState& input)
     }
 }
 
+void SandboxGame::UpdateCombatAndEnemies(float deltaSeconds, const rw::input::InputState& input)
+{
+    m_playerCombat.Update(deltaSeconds);
+
+    if (input.WasKeyPressed(rw::input::Key::F10)) {
+        ResetRealmWisp();
+    }
+
+    if (input.WasKeyPressed(rw::input::Key::C)) {
+        const PlayerAttackResult attack = m_playerCombat.TryMeleeAttack(
+            m_player.Camera(), m_realmWisp.transform.position, m_realmWisp.health);
+        if (attack.onCooldown) {
+            m_lastCombatMessage = "Attack cooling down";
+        } else if (attack.hit) {
+            m_lastCombatMessage = "Hit " + m_realmWisp.name;
+            if (!m_realmWisp.health.IsAlive()) {
+                EnemyLootResult loot = m_realmWisp.DropLoot(m_itemDatabase, m_inventory);
+                if (!loot.message.empty()) {
+                    m_lastCombatMessage = loot.message;
+                }
+            }
+        } else {
+            m_lastCombatMessage = "Attack missed";
+        }
+        rw::core::Logger::Info(m_lastCombatMessage);
+    }
+
+    const bool wasAlive = m_realmWisp.health.IsAlive();
+    EnemyUpdateResult enemyUpdate = m_realmWisp.Update(
+        deltaSeconds, m_player.Camera().position, m_player.Vitals());
+    if (!enemyUpdate.message.empty()) {
+        m_lastCombatMessage = enemyUpdate.message;
+    }
+
+    if (wasAlive && !m_realmWisp.health.IsAlive()) {
+        EnemyLootResult loot = m_realmWisp.DropLoot(m_itemDatabase, m_inventory);
+        if (!loot.message.empty()) {
+            m_lastCombatMessage = loot.message;
+            rw::core::Logger::Info(m_lastCombatMessage);
+        }
+    }
+
+    if (!m_player.Vitals().IsAlive()) {
+        m_lastCombatMessage = "Player down";
+    }
+
+    SyncRealmWispVisual();
+}
+
 void SandboxGame::GatherTargetNode(GatherableNode& node)
 {
     const GatheringResult result = node.Gather(m_itemDatabase, m_inventory);
@@ -390,6 +454,32 @@ std::string SandboxGame::SelectedBuildableName() const
     const BuildableDefinition* selected = m_buildableDatabase.FindById(
         m_buildPlacement.SelectedBuildableId());
     return selected != nullptr ? selected->displayName : "None";
+}
+
+void SandboxGame::ResetRealmWisp()
+{
+    m_realmWisp = EnemyAgent::CreateRealmWisp();
+    m_lastCombatMessage = "Realm Wisp reset";
+    rw::core::Logger::Info(m_lastCombatMessage);
+    SyncRealmWispVisual();
+}
+
+void SandboxGame::SyncRealmWispVisual()
+{
+    for (rw::scene::SceneObject& object : m_scene.MutableObjects()) {
+        if (object.name != m_realmWisp.name) {
+            continue;
+        }
+
+        object.transform = m_realmWisp.transform;
+        if (m_realmWisp.health.IsAlive()) {
+            object.color = { 0.75F, 0.30F, 0.95F };
+        } else {
+            object.transform.scale = { 0.25F, 0.12F, 0.25F };
+            object.color = { 0.18F, 0.10F, 0.22F };
+        }
+        return;
+    }
 }
 
 std::string SandboxGame::InventorySummary() const
