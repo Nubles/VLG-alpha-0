@@ -29,6 +29,11 @@ public:
     void PollEvents(rw::input::InputState& input);
     void ClearBlankScreen();
     void SetTitle(const std::string& title);
+    void SwapBuffers();
+    int Width() const;
+    int Height() const;
+    void* NativeHandle() const;
+    void* DeviceContext() const;
 
 private:
     std::unique_ptr<Impl> m_impl;

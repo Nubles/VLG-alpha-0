@@ -1,8 +1,9 @@
 #include "Engine/Core/Application.h"
+#include "Game/Source/SandboxGame.h"
 
 int main()
 {
     rw::core::Application app;
-    return app.Run();
+    rw::game::SandboxGame game;
+    return app.Run(game);
 }
-

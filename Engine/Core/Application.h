@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Core/Clock.h"
+#include "Engine/Core/GameLayer.h"
 #include "Engine/Debug/DebugOverlay.h"
 #include "Engine/Input/InputState.h"
 #include "Engine/Platform/Window.h"
@@ -10,7 +11,7 @@ namespace rw::core {
 
 class Application {
 public:
-    int Run();
+    int Run(GameLayer& game);
 
 private:
     Clock m_clock;
@@ -20,4 +21,3 @@ private:
 };
 
 } // namespace rw::core
-

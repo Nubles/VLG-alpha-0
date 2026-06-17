@@ -16,8 +16,11 @@ namespace rw::platform {
 
 struct Window::Impl {
     HWND handle = nullptr;
+    HDC deviceContext = nullptr;
     HINSTANCE instance = nullptr;
     bool open = false;
+    int width = 0;
+    int height = 0;
     std::string className;
 };
 
@@ -60,12 +63,16 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
         if (impl != nullptr) {
             impl->open = false;
         }
-        DestroyWindow(window);
+        return 0;
+    case WM_SIZE:
+        if (impl != nullptr) {
+            impl->width = LOWORD(lParam);
+            impl->height = HIWORD(lParam);
+        }
         return 0;
     case WM_DESTROY:
         if (impl != nullptr) {
             impl->open = false;
-            impl->handle = nullptr;
         }
         PostQuitMessage(0);
         return 0;
@@ -81,6 +88,8 @@ Window::Window(const WindowConfig& config)
 {
     m_impl->instance = GetModuleHandleW(nullptr);
     m_impl->className = "RealmboundWildsWindowClass";
+    m_impl->width = config.width;
+    m_impl->height = config.height;
 
     const std::wstring className = ToWide(m_impl->className);
 
@@ -125,6 +134,7 @@ Window::Window(const WindowConfig& config)
     m_impl->open = true;
     ShowWindow(m_impl->handle, SW_SHOW);
     UpdateWindow(m_impl->handle);
+    m_impl->deviceContext = GetDC(m_impl->handle);
 
     core::Logger::Info("Window created.");
 }
@@ -132,6 +142,10 @@ Window::Window(const WindowConfig& config)
 Window::~Window()
 {
     if (m_impl && m_impl->handle != nullptr) {
+        if (m_impl->deviceContext != nullptr) {
+            ReleaseDC(m_impl->handle, m_impl->deviceContext);
+            m_impl->deviceContext = nullptr;
+        }
         DestroyWindow(m_impl->handle);
         m_impl->handle = nullptr;
     }
@@ -159,10 +173,22 @@ void Window::PollEvents(rw::input::InputState& input)
         DispatchMessageW(&message);
     }
 
-    if ((GetAsyncKeyState(VK_ESCAPE) & 0x8000) != 0) {
-        input.SetEscapeDown(true);
+    const bool escapeDown = (GetAsyncKeyState(VK_ESCAPE) & 0x8000) != 0;
+    input.SetEscapeDown(escapeDown);
+    if (escapeDown) {
         m_impl->open = false;
     }
+
+    input.SetKeyDown(rw::input::Key::W, (GetAsyncKeyState('W') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::A, (GetAsyncKeyState('A') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::S, (GetAsyncKeyState('S') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::D, (GetAsyncKeyState('D') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Up, (GetAsyncKeyState(VK_UP) & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Down, (GetAsyncKeyState(VK_DOWN) & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Left, (GetAsyncKeyState(VK_LEFT) & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Right, (GetAsyncKeyState(VK_RIGHT) & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::Shift,
+        (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0);
 }
 
 void Window::ClearBlankScreen()
@@ -182,6 +208,31 @@ void Window::SetTitle(const std::string& title)
     SetWindowTextW(m_impl->handle, ToWide(title).c_str());
 }
 
+void Window::SwapBuffers()
+{
+    ::SwapBuffers(m_impl->deviceContext);
+}
+
+int Window::Width() const
+{
+    return m_impl->width;
+}
+
+int Window::Height() const
+{
+    return m_impl->height;
+}
+
+void* Window::NativeHandle() const
+{
+    return m_impl->handle;
+}
+
+void* Window::DeviceContext() const
+{
+    return m_impl->deviceContext;
+}
+
 #else
 
 struct Window::Impl {
@@ -199,6 +250,11 @@ bool Window::IsOpen() const { return false; }
 void Window::PollEvents(rw::input::InputState&) {}
 void Window::ClearBlankScreen() {}
 void Window::SetTitle(const std::string&) {}
+void Window::SwapBuffers() {}
+int Window::Width() const { return 0; }
+int Window::Height() const { return 0; }
+void* Window::NativeHandle() const { return nullptr; }
+void* Window::DeviceContext() const { return nullptr; }
 
 #endif
 

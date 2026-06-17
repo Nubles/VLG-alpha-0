@@ -20,6 +20,7 @@ bool InputState::QuitRequested() const
 void InputState::SetEscapeDown(bool isDown)
 {
     m_escapeDown = isDown;
+    SetKeyDown(Key::Escape, isDown);
     if (isDown) {
         RequestQuit();
     }
@@ -30,5 +31,14 @@ bool InputState::EscapeDown() const
     return m_escapeDown;
 }
 
-} // namespace rw::input
+void InputState::SetKeyDown(Key key, bool isDown)
+{
+    m_keys[static_cast<int>(key)] = isDown;
+}
 
+bool InputState::IsKeyDown(Key key) const
+{
+    return m_keys[static_cast<int>(key)];
+}
+
+} // namespace rw::input
