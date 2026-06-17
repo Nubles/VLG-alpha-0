@@ -2,6 +2,7 @@
 
 #include "Engine/Core/GameLayer.h"
 #include "Engine/Scene/Scene.h"
+#include "Game/Source/Crafting/RecipeDatabase.h"
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Interactable.h"
@@ -25,7 +26,9 @@ public:
 private:
     void UpdateInteractionTarget(const rw::input::InputState& input);
     void UpdateDebugItemGrants(const rw::input::InputState& input);
+    void UpdateDebugCrafting(const rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
+    void CraftDebugRecipe(const std::string& recipeId);
     void GatherTargetNode(GatherableNode& node);
     void AddGatherableNode(const GatherableNode& node, const rw::math::Vec3& color);
     std::string InventorySummary() const;
@@ -33,6 +36,7 @@ private:
     rw::scene::Scene m_scene;
     PlayerController m_player;
     ItemDatabase m_itemDatabase;
+    RecipeDatabase m_recipeDatabase;
     Inventory m_inventory;
     Hotbar m_hotbar;
     std::vector<Interactable> m_interactables;
@@ -42,6 +46,7 @@ private:
     std::string m_lastInteractionMessage;
     std::string m_lastInventoryMessage;
     std::string m_lastGatherMessage;
+    std::string m_lastCraftMessage;
 };
 
 } // namespace rw::game

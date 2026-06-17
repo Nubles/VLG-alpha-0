@@ -1,6 +1,7 @@
 #include "Game/Source/SandboxGame.h"
 
 #include "Engine/Core/Logger.h"
+#include "Game/Source/Crafting/CraftingService.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -10,6 +11,7 @@ namespace rw::game {
 
 SandboxGame::SandboxGame()
     : m_itemDatabase(ItemDatabase::CreateStarterDatabase())
+    , m_recipeDatabase(RecipeDatabase::CreateStarterRecipes())
     , m_inventory(16)
     , m_hotbar(8)
 {
@@ -87,6 +89,7 @@ void SandboxGame::OnUpdate(float deltaSeconds, const rw::input::InputState& inpu
     m_player.Update(deltaSeconds, input);
     UpdateInteractionTarget(input);
     UpdateDebugItemGrants(input);
+    UpdateDebugCrafting(input);
 }
 
 void SandboxGame::OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window)
@@ -119,6 +122,10 @@ std::string SandboxGame::DebugTitle() const
 
     if (!m_lastGatherMessage.empty()) {
         text << " | " << m_lastGatherMessage;
+    }
+
+    if (!m_lastCraftMessage.empty()) {
+        text << " | " << m_lastCraftMessage;
     }
 
     return text.str();
@@ -196,6 +203,22 @@ void SandboxGame::UpdateDebugItemGrants(const rw::input::InputState& input)
     }
 }
 
+void SandboxGame::UpdateDebugCrafting(const rw::input::InputState& input)
+{
+    if (input.WasKeyPressed(rw::input::Key::F6)) {
+        CraftDebugRecipe("primitive_tool");
+    }
+    if (input.WasKeyPressed(rw::input::Key::F7)) {
+        CraftDebugRecipe("camp_bundle");
+    }
+    if (input.WasKeyPressed(rw::input::Key::F8)) {
+        CraftDebugRecipe("simple_meal");
+    }
+    if (input.WasKeyPressed(rw::input::Key::F9)) {
+        CraftDebugRecipe("workbench_kit");
+    }
+}
+
 void SandboxGame::GatherTargetNode(GatherableNode& node)
 {
     const GatheringResult result = node.Gather(m_itemDatabase, m_inventory);
@@ -242,6 +265,21 @@ void SandboxGame::GrantDebugItem(const std::string& itemId, int quantity)
 
     m_lastInventoryMessage = message.str();
     rw::core::Logger::Info(m_lastInventoryMessage);
+
+    for (int index = 0; index < static_cast<int>(m_inventory.Slots().size())
+         && index < static_cast<int>(m_hotbar.Entries().size()); ++index) {
+        if (!m_inventory.Slots()[static_cast<size_t>(index)].IsEmpty()) {
+            m_hotbar.AssignSlot(index, index);
+        }
+    }
+}
+
+void SandboxGame::CraftDebugRecipe(const std::string& recipeId)
+{
+    const CraftingResult result = CraftingService::Craft(
+        m_recipeDatabase, m_itemDatabase, m_inventory, recipeId);
+    m_lastCraftMessage = result.message;
+    rw::core::Logger::Info(m_lastCraftMessage);
 
     for (int index = 0; index < static_cast<int>(m_inventory.Slots().size())
          && index < static_cast<int>(m_hotbar.Entries().size()); ++index) {

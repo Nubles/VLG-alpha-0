@@ -1,3 +1,5 @@
+#include "Game/Source/Crafting/CraftingService.h"
+#include "Game/Source/Crafting/RecipeDatabase.h"
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Items/ItemDatabase.h"
@@ -14,6 +16,16 @@ int main()
     assert(wood->displayName == "Wood");
     assert(wood->maxStackSize == 50);
     assert(database.FindById("missing_item") == nullptr);
+    assert(database.FindById("camp_bundle") != nullptr);
+    assert(database.FindById("simple_meal") != nullptr);
+    assert(database.FindById("workbench_kit") != nullptr);
+
+    const rw::game::RecipeDatabase recipes = rw::game::RecipeDatabase::CreateStarterRecipes();
+    assert(recipes.FindById("primitive_tool") != nullptr);
+    assert(recipes.FindById("camp_bundle") != nullptr);
+    assert(recipes.FindById("simple_meal") != nullptr);
+    assert(recipes.FindById("workbench_kit") != nullptr);
+    assert(recipes.FindById("missing_recipe") == nullptr);
 
     rw::game::Inventory inventory(2);
     assert(inventory.SlotCount() == 2);
@@ -110,6 +122,56 @@ int main()
     assert(overflow.success);
     assert(overflowInventory.TotalQuantity("wood") == 50);
     assert(overflow.leftoverQuantity == 10);
+
+    rw::game::Inventory unknownRecipeInventory(4);
+    rw::game::CraftingResult unknownRecipe = rw::game::CraftingService::Craft(
+        recipes, database, unknownRecipeInventory, "missing_recipe");
+    assert(!unknownRecipe.success);
+    assert(unknownRecipe.failureReason == rw::game::CraftingFailureReason::UnknownRecipe);
+
+    rw::game::Inventory missingIngredientInventory(4);
+    assert(missingIngredientInventory.AddItem(database, "wood", 1) == 0);
+    rw::game::CraftingResult missingIngredient = rw::game::CraftingService::Craft(
+        recipes, database, missingIngredientInventory, "primitive_tool");
+    assert(!missingIngredient.success);
+    assert(missingIngredient.failureReason == rw::game::CraftingFailureReason::MissingIngredient);
+    assert(missingIngredientInventory.TotalQuantity("wood") == 1);
+    assert(missingIngredientInventory.TotalQuantity("primitive_tool") == 0);
+
+    rw::game::Inventory craftingInventory(4);
+    assert(craftingInventory.AddItem(database, "wood", 1) == 0);
+    assert(craftingInventory.AddItem(database, "stone", 1) == 0);
+    assert(craftingInventory.AddItem(database, "fiber", 1) == 0);
+    rw::game::CraftingResult primitiveTool = rw::game::CraftingService::Craft(
+        recipes, database, craftingInventory, "primitive_tool");
+    assert(primitiveTool.success);
+    assert(primitiveTool.craftedItemId == "primitive_tool");
+    assert(primitiveTool.craftedQuantity == 1);
+    assert(craftingInventory.TotalQuantity("wood") == 0);
+    assert(craftingInventory.TotalQuantity("stone") == 0);
+    assert(craftingInventory.TotalQuantity("fiber") == 0);
+    assert(craftingInventory.TotalQuantity("primitive_tool") == 1);
+
+    rw::game::Inventory fullInventory(1);
+    assert(fullInventory.AddItem(database, "wood", 10) == 0);
+    rw::game::CraftingResult fullResult = rw::game::CraftingService::Craft(
+        recipes, database, fullInventory, "camp_bundle");
+    assert(!fullResult.success);
+    assert(fullResult.failureReason == rw::game::CraftingFailureReason::MissingIngredient);
+    assert(fullInventory.TotalQuantity("wood") == 10);
+    assert(fullInventory.TotalQuantity("camp_bundle") == 0);
+
+    rw::game::Inventory outputBlockedInventory(2);
+    assert(outputBlockedInventory.AddItem(database, "wood", 50) == 0);
+    assert(outputBlockedInventory.AddItem(database, "fiber", 50) == 0);
+    rw::game::CraftingResult outputBlocked = rw::game::CraftingService::Craft(
+        recipes, database, outputBlockedInventory, "camp_bundle");
+    assert(!outputBlocked.success);
+    assert(outputBlocked.failureReason == rw::game::CraftingFailureReason::InventoryFull);
+    assert(outputBlocked.leftoverOutputQuantity == 1);
+    assert(outputBlockedInventory.TotalQuantity("wood") == 50);
+    assert(outputBlockedInventory.TotalQuantity("fiber") == 50);
+    assert(outputBlockedInventory.TotalQuantity("camp_bundle") == 0);
 
     return 0;
 }
