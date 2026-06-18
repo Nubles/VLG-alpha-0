@@ -411,3 +411,18 @@ Result:
 - Local interactive playthrough was not performed.
 - GitHub Actions remains the authoritative automated build/test gate.
 - A manual Windows playthrough is still required from a working Visual Studio/CMake developer environment.
+
+## Stabilisation Pass 10 Result
+
+Completed after Stabilisation Pass 9:
+
+- Updated the `Windows Build` GitHub Actions workflow to upload a successful Debug playtest artifact named `realmbound-wilds-debug-playtest`.
+- Packaged the built `RealmboundWilds.exe` and copied `Game/Data` runtime data without uploading the full build tree or local saves.
+- Updated GitHub Actions documentation with artifact download, extraction, and run instructions.
+- Updated release-candidate QA documentation to recommend artifact-based manual playthrough while local configure/build remains unavailable.
+- Added `build-*/` to `.gitignore` for local CMake build directories created during RC verification attempts.
+
+Remaining deferred items:
+
+- The downloaded artifact still needs a manual Windows playthrough before the RC is locally certified.
+- Terrain, procedural generation, new content, full UI, settings, input remapping, and other major systems remain deferred.

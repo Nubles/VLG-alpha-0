@@ -68,3 +68,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             throw "GameCoreTests failed with exit code $LASTEXITCODE"
           }
+
+      - name: Upload playtest build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: realmbound-wilds-debug-playtest
+          path: |
+            build/Debug/RealmboundWilds.exe
+            build/Debug/Game/Data/**

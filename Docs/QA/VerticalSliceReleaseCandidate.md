@@ -161,3 +161,26 @@ Not performed. The blocker is local toolchain/configure reliability from this sh
 ### Final Pass 9 Verdict
 
 Stabilisation Pass 9 does not certify the local interactive playthrough. It records the local tooling blocker exactly. The release candidate still requires a manual Windows playthrough from a working Visual Studio/CMake developer environment before it can be called locally verified.
+
+## CI Playtest Artifact Path
+
+Stabilisation Pass 10 updates GitHub Actions so successful `Windows Build` runs upload a Debug playtest artifact:
+
+```text
+realmbound-wilds-debug-playtest
+```
+
+The artifact is the recommended workaround while local configure/build remains unreliable from this shell.
+
+Expected artifact contents:
+
+- `RealmboundWilds.exe`
+- `Game/Data/**`
+
+The artifact should not contain:
+
+- local `Saves/`
+- local build directories
+- CMake/Ninja/Visual Studio intermediate folders
+
+Manual RC verification should now be performed by downloading this artifact from a successful GitHub Actions run, extracting it on Windows, launching `RealmboundWilds.exe`, and running the full checklist above. Rendering, cursor capture, HUD text, prompt/guidance behavior, and save/load still require manual Windows execution.
