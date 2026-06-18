@@ -34,6 +34,7 @@ Realmbound Wilds currently has a playable debug vertical slice built on a custom
 - Pass 9: attempted local Windows release-candidate verification; local configure did not complete from this shell, so interactive playthrough remains required.
 - Pass 10: GitHub Actions playtest artifact packaging for manual RC verification when local configure/build is unavailable.
 - Pass 11: downloaded and launched the CI playtest artifact; basic debug controls, save, load, and clean shutdown were verified through title/debug output, but full visual/manual RC playthrough remains required.
+- Pass 12: launched the latest CI artifact in a visible window and confirmed scene/HUD/prompt/guidance rendering by screenshot; full hands-on RC certification is still not complete.
 
 ## Current Data-Loaded Definitions
 
@@ -84,6 +85,7 @@ These should remain code-defined until their own scoped pass. Do not mix them in
 - debug title/messages still mirror detailed tester feedback text
 - HUD prompt/guidance is specific to the current Mistwood Hollow vertical slice
 - CI artifact launch is verified, but rendered HUD inspection, target aiming, combat, gatherable depletion, and Realm Fracture completion still need a true hands-on Windows playthrough
+- the latest visual artifact attempt confirms rendering, but mouse-look feel, complete gathering/crafting/build/combat/fracture flow, save/load restoration, and cursor observation still need direct human certification
 
 ## Recommended Next Decision
 

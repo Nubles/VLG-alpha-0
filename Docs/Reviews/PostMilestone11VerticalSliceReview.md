@@ -441,3 +441,20 @@ Result:
 - No code bugs were confirmed and no code fixes were made.
 - The artifact is runnable, but this shell-driven verification did not fully certify visual HUD rendering, precise target prompts, gatherable depletion, combat, Realm Fracture interaction, or visible cursor restoration.
 - A true hands-on Windows artifact playthrough is still required before calling the release candidate manually verified.
+
+## Stabilisation Pass 12 Result
+
+Attempted after Stabilisation Pass 11:
+
+- Downloaded the latest green `realmbound-wilds-debug-playtest` artifact from Windows Build run `27777863380` for commit `4d1bbd444bd8d6df6816522d82cbc009f4114a6d`.
+- Extracted it outside the repository under `C:\tmp\VLG-artifact-visual-rc\extracted`.
+- Confirmed the executable and data files were present and no quick save existed before launch.
+- Launched the artifact in a visible window and captured the rendered scene.
+- Confirmed the debug grid, primitive scene, HUD bars, debug text glyphs, `PROMPT:`, and `NEXT:` line were visible.
+- Confirmed arrow-key camera adjustment could change target acquisition to a gatherable target.
+- Exited cleanly with Escape and confirmed no save was created during the attempt.
+
+Result:
+
+- No RC-blocking code bug was confirmed.
+- The release candidate is still not manually artifact-certified because the full human-controlled route through gathering, Cracked Rock, crafting, building, Realm Wisp combat, Realm Fracture stabilisation, save/load restoration, mouse-look feel, and cursor observation was not completed.

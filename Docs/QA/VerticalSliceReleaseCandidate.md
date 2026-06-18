@@ -321,3 +321,113 @@ Loading reported `Loaded save data`, and inventory state remained consistent aft
 ### Final Pass 11 Verdict
 
 The CI artifact is downloadable, extractable, launchable, and capable of basic debug-control/save-load operation. Stabilisation Pass 11 does not fully certify the release candidate as manually playthrough-verified because visual target acquisition, rendered HUD inspection, combat, gatherable depletion, and Realm Fracture completion were not completed from this shell-driven environment.
+
+## Stabilisation Pass 12 Visual Artifact RC Attempt
+
+Stabilisation Pass 12 attempted the remaining hands-on visual artifact certification using the latest green CI artifact after Pass 11.
+
+### Artifact Tested
+
+Workflow run:
+
+```text
+27777863380
+```
+
+Commit:
+
+```text
+4d1bbd444bd8d6df6816522d82cbc009f4114a6d
+```
+
+Artifact:
+
+```text
+realmbound-wilds-debug-playtest
+```
+
+Extracted test folder:
+
+```text
+C:\tmp\VLG-artifact-visual-rc\extracted
+```
+
+Machine/environment:
+
+```text
+Windows desktop through Codex shell, with window screenshots and scripted Win32 key input.
+```
+
+### Pre-Launch Checks
+
+Pass. The extracted folder contained:
+
+- `RealmboundWilds.exe`
+- `Game/Data/Items/items.txt`
+- `Game/Data/Recipes/recipes.txt`
+- `Game/Data/Buildables/buildables.txt`
+
+Pass. No pre-existing save was present:
+
+```text
+C:\tmp\VLG-artifact-visual-rc\extracted\Saves\quick_save.rwsave
+```
+
+### Visual Checks Confirmed
+
+The artifact launched in a visible window. A screenshot confirmed:
+
+- Mistwood Hollow scene was visible.
+- Debug grid and primitive scene rendered.
+- HUD health/stamina bars were visible.
+- Debug text glyphs were visible.
+- `PROMPT:` line was visible.
+- `NEXT:` line was visible.
+- Enemy health/status text was visible.
+
+The window title reported:
+
+```text
+Mistwood Hollow | HP 100 ST 100 | target None | inv empty | enemy Idle 50 | obj fracture unknown | mouse off
+```
+
+Camera adjustment with arrow keys changed target acquisition from `None` to a gatherable target, confirming the targeting path was active.
+
+### Checklist Result
+
+Not fully passed. The visual artifact is runnable and renders the expected debug scene/HUD, but the full manual RC checklist was not certified.
+
+| Check Area | Result | Notes |
+| --- | --- | --- |
+| Artifact contents | Pass | Required executable and data files were present. |
+| No pre-existing save | Pass | No quick save existed before launch. |
+| Visible app launch | Pass | Window opened and remained running. |
+| Scene/grid/primitives | Pass | Confirmed by screenshot. |
+| HUD bars/text | Pass | Confirmed by screenshot. |
+| `PROMPT:` and `NEXT:` lines | Pass | Confirmed by screenshot. |
+| Help readability | Not completed in Pass 12 | Covered in Pass 11 by title/debug output, but not re-screenshotted here. |
+| Arrow-key target/look behavior | Partial | Arrow-key adjustment changed target acquisition. |
+| Mouse-look visual check | Not completed | Requires direct human mouse operation and observation. |
+| Gather wood/stone/fiber path | Not completed | A gatherable target was acquired, but the full ordered gathering route was not completed. |
+| Cracked Rock missing-tool prompt | Not completed | Requires controlled visual target acquisition. |
+| Craft/build path | Not completed | Not repeated in this visual attempt. |
+| Realm Wisp combat | Not completed | Wisp entered attack range during target checks; full fight/defeat path was not completed. |
+| Direct target prompt priority near Wisp | Partial | Title showed a direct gatherable target while the Wisp was attacking, consistent with the intended priority. |
+| Realm Fracture interaction/stabilisation | Not completed | Requires full inventory/combat path first. |
+| Save/load restoration | Not completed | No save was created in this attempt. |
+| Escape clean shutdown | Pass | Process exited after Escape. |
+| Cursor restoration after shutdown | Not visually certified | Process exited cleanly; human-visible cursor state was not directly observed. |
+
+### Bugs Found
+
+No confirmed RC-blocking code bug was found.
+
+The certification blocker is still verification completeness: this environment can launch and screenshot the artifact, but the full hands-on route needs direct human control for precise aiming, mouse-look feel, combat spacing, Realm Fracture completion, save/load restoration, and cursor observation.
+
+### Fixes Made
+
+No code fixes were made.
+
+### Final Pass 12 Verdict
+
+Not manually artifact-certified yet. The artifact renders and launches correctly, but the full 52-step hands-on visual RC checklist still needs to be completed by a human tester using the downloaded artifact.
