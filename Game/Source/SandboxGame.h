@@ -9,6 +9,8 @@
 #include "Game/Source/Combat/PlayerCombat.h"
 #include "Game/Source/Crafting/RecipeDatabase.h"
 #include "Game/Source/Debug/DebugMessageLog.h"
+#include "Game/Source/Guidance/ContextualPrompt.h"
+#include "Game/Source/Guidance/VerticalSliceGuide.h"
 #include "Game/Source/Inventory/Hotbar.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Interactable.h"
@@ -60,6 +62,8 @@ private:
     std::string TargetName() const;
     std::string ObjectiveStatus() const;
     HudState BuildHudState() const;
+    ContextualPromptState BuildContextualPromptState() const;
+    VerticalSliceGuideState BuildVerticalSliceGuideState() const;
     void PushDebugMessage(const std::string& message);
     void GatherTargetNode(GatherableNode& node);
     void AddGatherableNode(const GatherableNode& node, const rw::math::Vec3& color);

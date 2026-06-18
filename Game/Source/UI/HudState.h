@@ -17,6 +17,8 @@ struct HudState {
     float enemyMaxHealth = 1.0F;
     std::string enemyState;
     std::string objectiveStatus;
+    std::string contextualPrompt;
+    std::string nextStep;
     bool buildModeActive = false;
     bool mouseLookEnabled = false;
     std::string selectedBuildableName = "None";

@@ -16,6 +16,8 @@ void TestUI()
     state.maxStamina = 50.0F;
     state.currentTargetName = "";
     state.objectiveStatus = "fracture stable";
+    state.contextualPrompt = "E GATHER Branch Pile";
+    state.nextStep = "NEXT: CRAFT PRIMITIVE_TOOL";
     state.mouseLookEnabled = true;
     state.buildModeActive = false;
     state.selectedBuildableName = "Camp Marker";
@@ -50,14 +52,16 @@ void TestUI()
     assert(textLines[0] == "HP 75/100");
     assert(textLines[1] == "ST 25/50");
     assert(textLines[2] == "MOUSE: ON");
-    assert(textLines[3] == "TARGET: None");
-    assert(textLines[4] == "OBJECTIVE: fracture stable");
-    assert(textLines[5] == "Realm Wisp 35/50 Chasing");
-    assert(textLines[6] == "Build: Camp Marker");
-    assert(textLines[7] == "first");
-    assert(textLines[8] == "second");
-    assert(textLines[9] == "third");
-    assert(textLines[10] == "SAVE: Saved game");
+    assert(textLines[3] == "PROMPT: E GATHER Branch Pile");
+    assert(textLines[4] == "NEXT: CRAFT PRIMITIVE_TOOL");
+    assert(textLines[5] == "TARGET: None");
+    assert(textLines[6] == "OBJECTIVE: fracture stable");
+    assert(textLines[7] == "Realm Wisp 35/50 Chasing");
+    assert(textLines[8] == "Build: Camp Marker");
+    assert(textLines[9] == "first");
+    assert(textLines[10] == "second");
+    assert(textLines[11] == "third");
+    assert(textLines[12] == "SAVE: Saved game");
 
     bool foundHealthFill = false;
     bool foundStaminaFill = false;

@@ -366,3 +366,18 @@ Remaining deferred items:
 
 - Settings menu, sensitivity UI, key rebinding, full action mapping, controller support, mouse UI interaction, and drag/drop remain deferred.
 - Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.
+
+## Milestone 15 Result
+
+Completed after Milestone 14:
+
+- Added game-side `ContextualPrompt` logic for target, missing tool, Realm Fracture, enemy, and build-mode prompts.
+- Added game-side `VerticalSliceGuide` logic for a simple ordered next-step line derived from existing vertical-slice state.
+- Added prompt and next-step fields to `HudState` and rendered them through the existing debug text overlay.
+- Updated help/manual QA/current-state/roadmap docs.
+- Added pure guidance tests covering contextual prompts and next-step ordering.
+
+Remaining deferred items:
+
+- Full quest system, tutorial manager, objective data loading, popups, dialogue, inventory UI, crafting menu, mouse UI interaction, and new content remain deferred.
+- Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.

@@ -19,6 +19,7 @@ Realmbound Wilds currently has a playable debug vertical slice built on a custom
 - Milestone 12: UI/HUD foundation with dependency-free overlay bars and debug panels.
 - Milestone 13: dependency-free debug text overlay using built-in rectangle glyphs.
 - Milestone 14: mouse-look toggle and input polish foundation with arrow-key fallback.
+- Milestone 15: contextual HUD prompts and vertical-slice next-step guidance.
 
 ## Completed Stabilisation Passes
 
@@ -77,6 +78,7 @@ These should remain code-defined until their own scoped pass. Do not mix them in
 - no settings menu, key rebinding UI, controller support, or mouse-driven UI interaction
 - one quick-save slot
 - debug title/messages still mirror detailed tester feedback text
+- HUD prompt/guidance is specific to the current Mistwood Hollow vertical slice
 
 ## Recommended Next Decision
 

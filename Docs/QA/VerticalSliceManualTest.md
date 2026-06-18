@@ -58,6 +58,7 @@ ctest --test-dir build -C Debug --output-on-failure
 3. Build the Debug target.
 4. Launch `RealmboundWilds.exe`.
 5. Confirm the app opens to the debug 3D sandbox with grid, primitive scene objects, and debug text.
+6. Confirm the HUD shows a prompt line and next-step line.
 
 ## Happy Path
 
@@ -84,6 +85,7 @@ ctest --test-dir build -C Debug --output-on-failure
 ## Expected Debug Messages
 
 - Help text includes movement, mouse look, interaction, combat, build, save, load, and exit controls.
+- HUD text includes a contextual prompt and next-step guidance line.
 - Gathering success names the gathered object or resource result.
 - Missing gathering tool feedback names the missing tool.
 - Failed fracture interaction lists all objective requirements and exact missing items.
@@ -108,6 +110,7 @@ ctest --test-dir build -C Debug --output-on-failure
 - Items, recipes, and buildables load from simple text data files; biome layouts, drop tables, objectives, and enemy definitions remain code-defined.
 - Build placement, combat, and interaction use simple prototype checks.
 - Mouse sensitivity is hardcoded for now; there is no settings UI or input rebinding yet.
+- Guidance is a lightweight vertical-slice checklist, not a full quest/tutorial system.
 
 ## What To Report If It Fails
 

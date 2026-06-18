@@ -12,6 +12,7 @@
 void TestDebugSystems()
 {
     const std::string helpText = rw::game::DebugHelpText();
+    assert(helpText.find("HUD shows prompt/next step") != std::string::npos);
     assert(helpText.find("WASD") != std::string::npos);
     assert(helpText.find("E interact") != std::string::npos);
     assert(helpText.find("C attack") != std::string::npos);

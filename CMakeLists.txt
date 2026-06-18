@@ -59,6 +59,8 @@ add_library(GameRuntime STATIC
     Game/Source/Debug/DebugFormatting.cpp
     Game/Source/Debug/DebugHelp.cpp
     Game/Source/Debug/DebugMessageLog.cpp
+    Game/Source/Guidance/ContextualPrompt.cpp
+    Game/Source/Guidance/VerticalSliceGuide.cpp
     Game/Source/Interactable.cpp
     Game/Source/Inventory/Hotbar.cpp
     Game/Source/Inventory/Inventory.cpp
@@ -113,6 +115,7 @@ add_executable(GameCoreTests
     Tests/Game/TestDataTextParser.cpp
     Tests/Game/TestDebug.cpp
     Tests/Game/TestGathering.cpp
+    Tests/Game/TestGuidance.cpp
     Tests/Game/TestInventory.cpp
     Tests/Game/TestProgressionObjectives.cpp
     Tests/Game/TestSaveLoad.cpp

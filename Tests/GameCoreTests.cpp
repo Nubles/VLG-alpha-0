@@ -7,6 +7,7 @@ int main()
     TestBiomeDefinitionsAndLayout();
     TestInventoryAndHotbar();
     TestGathering();
+    TestGuidance();
     TestCrafting();
     TestBuilding();
     TestCombatAndVitals();

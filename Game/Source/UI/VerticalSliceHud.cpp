@@ -115,6 +115,12 @@ std::vector<std::string> VerticalSliceHud::BuildTextLines(const HudState& state)
     lines.push_back("HP " + WholeNumber(state.health) + "/" + WholeNumber(state.maxHealth));
     lines.push_back("ST " + WholeNumber(state.stamina) + "/" + WholeNumber(state.maxStamina));
     lines.push_back(state.mouseLookEnabled ? "MOUSE: ON" : "MOUSE: OFF");
+    if (!state.contextualPrompt.empty()) {
+        lines.push_back("PROMPT: " + state.contextualPrompt);
+    }
+    if (!state.nextStep.empty()) {
+        lines.push_back(state.nextStep);
+    }
     lines.push_back("TARGET: " + HudFormatter::TargetText(state));
     lines.push_back("OBJECTIVE: " + HudFormatter::ObjectiveText(state));
 
@@ -163,28 +169,38 @@ std::vector<rw::renderer::OverlayRect> VerticalSliceHud::BuildTextOverlay(
 
     AppendText(rects, lines[2],
         margin + 8.0F, height - 104.0F, 2.0F, softWhite, 0.92F, 16);
-    AppendText(rects, lines[3],
-        margin + 8.0F, margin + 8.0F, 2.0F, softWhite, 0.95F, 36);
-    AppendText(rects, lines[4],
-        margin + 8.0F, margin + panelHeight + 16.0F, 2.0F, softWhite, 0.95F, 38);
+    float topTextY = margin + 8.0F;
+    if (!state.contextualPrompt.empty()) {
+        AppendText(rects, "PROMPT: " + state.contextualPrompt,
+            margin + 8.0F, topTextY, 2.0F, softWhite, 0.95F, 42);
+        topTextY += 18.0F;
+    }
+    if (!state.nextStep.empty()) {
+        AppendText(rects, state.nextStep,
+            margin + 8.0F, topTextY, 2.0F, softWhite, 0.95F, 42);
+        topTextY += 18.0F;
+    }
+    AppendText(rects, "TARGET: " + HudFormatter::TargetText(state),
+        margin + 8.0F, topTextY, 2.0F, softWhite, 0.95F, 36);
+    topTextY += 18.0F;
+    AppendText(rects, "OBJECTIVE: " + HudFormatter::ObjectiveText(state),
+        margin + 8.0F, topTextY, 2.0F, softWhite, 0.95F, 38);
 
-    std::size_t nextLine = 5;
     if (state.enemyHealth > 0.0F) {
         AppendText(rects,
-            lines[nextLine],
+            state.enemyName + " " + WholeNumber(state.enemyHealth) + "/"
+                + WholeNumber(state.enemyMaxHealth) + " " + state.enemyState,
             width - std::min(220.0F, width * 0.28F),
             margin + 18.0F,
             2.0F,
             softWhite,
             0.95F,
             28);
-        ++nextLine;
     }
 
     if (state.buildModeActive) {
-        AppendText(rects, lines[nextLine],
+        AppendText(rects, HudFormatter::BuildModeText(state),
             width - panelWidth - margin + 8.0F, height - 48.0F, 2.0F, softWhite, 0.95F, 32);
-        ++nextLine;
     }
 
     const float messageY = margin + (panelHeight * 2.0F) + 24.0F;
@@ -192,18 +208,17 @@ std::vector<rw::renderer::OverlayRect> VerticalSliceHud::BuildTextOverlay(
     const int firstMessage = std::max(0, messageCount - 3);
     for (int index = firstMessage; index < messageCount; ++index) {
         AppendText(rects,
-            lines[nextLine],
+            state.messages[static_cast<std::size_t>(index)],
             margin + 8.0F,
             messageY + static_cast<float>(index - firstMessage) * 18.0F,
             2.0F,
             mutedWhite,
             0.90F,
             44);
-        ++nextLine;
     }
 
     if (!state.saveLoadMessage.empty()) {
-        AppendText(rects, lines[nextLine],
+        AppendText(rects, "SAVE: " + state.saveLoadMessage,
             margin + 8.0F,
             messageY + static_cast<float>(std::min(messageCount, 3)) * 18.0F,
             2.0F,

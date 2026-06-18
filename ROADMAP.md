@@ -295,6 +295,26 @@ Exit criteria:
 - Existing vertical-slice controls and flow remain unchanged.
 - CI remains green.
 
+## Milestone 15: Contextual Prompts + Vertical Slice Guidance
+
+Goal: help new testers understand the current vertical slice using lightweight HUD text without adding a quest or tutorial system.
+
+Deliverables:
+
+- Game-side contextual prompt builder.
+- Game-side vertical-slice next-step guide.
+- HUD prompt and next-step text lines.
+- Help/manual QA documentation updates.
+- Pure tests for prompt and guide ordering.
+
+Exit criteria:
+
+- Prompt line reflects target, missing tool, Realm Fracture, enemy, or build context.
+- Next-step line advances through the existing vertical-slice flow.
+- No new gameplay content or persistent quest/tutorial system is added.
+- Existing controls and flow remain unchanged.
+- CI remains green.
+
 ## Post-Vertical-Slice Stabilisation
 
 Milestones 0-11 have produced the first playable debug vertical slice. Before adding another major gameplay milestone, the project should stabilise the current slice so future systems do not pile onto fragile integration code.

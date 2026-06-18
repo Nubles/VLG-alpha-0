@@ -511,6 +511,74 @@ HudState SandboxGame::BuildHudState() const
     state.messages = m_messages.Messages();
     state.saveLoadMessage = m_lastSaveMessage;
     state.mouseLookEnabled = m_playerMouseLookEnabled;
+    state.contextualPrompt = ContextualPrompt::Build(BuildContextualPromptState());
+    state.nextStep = VerticalSliceGuide::NextStep(BuildVerticalSliceGuideState());
+    return state;
+}
+
+ContextualPromptState SandboxGame::BuildContextualPromptState() const
+{
+    ContextualPromptState state;
+    state.buildModeActive = m_buildPlacement.BuildModeActive();
+    state.enemyRelevant = m_realmWisp.health.IsAlive()
+        && rw::math::Length(m_realmWisp.transform.position - m_player.Camera().position) <= 4.0F;
+    state.enemyName = m_realmWisp.name;
+
+    if (m_currentGatherableIndex >= 0) {
+        const GatherableNode& node = m_gatherableNodes[static_cast<size_t>(m_currentGatherableIndex)];
+        state.hasTarget = true;
+        state.targetIsGatherable = true;
+        state.targetName = node.name;
+        state.targetRequiresMissingTool = !node.requiredToolId.empty()
+            && !m_inventory.Contains(node.requiredToolId, 1);
+        if (state.targetRequiresMissingTool) {
+            const ItemDefinition* tool = m_itemDatabase.FindById(node.requiredToolId);
+            state.requiredToolName = tool != nullptr ? tool->displayName : node.requiredToolId;
+        }
+        return state;
+    }
+
+    if (m_currentTarget != nullptr) {
+        state.hasTarget = true;
+        state.targetName = m_currentTarget->name;
+        state.targetIsRealmFracture = m_currentTarget->name == "Realm Fracture";
+        state.targetIsStabilisedFracture = state.targetIsRealmFracture
+            && m_progression.HasFlag(kMistwoodFractureStabilized);
+    }
+
+    return state;
+}
+
+VerticalSliceGuideState SandboxGame::BuildVerticalSliceGuideState() const
+{
+    VerticalSliceGuideState state;
+    state.mouseLookEnabled = m_playerMouseLookEnabled;
+    state.wood = m_inventory.TotalQuantity("wood");
+    state.stone = m_inventory.TotalQuantity("stone");
+    state.fiber = m_inventory.TotalQuantity("fiber");
+    state.primitiveTool = m_inventory.TotalQuantity("primitive_tool");
+    state.campBundle = m_inventory.TotalQuantity("camp_bundle");
+    state.workbenchKit = m_inventory.TotalQuantity("workbench_kit");
+    state.realmAnchor = m_inventory.TotalQuantity("realm_anchor");
+    state.realmWispDefeated = !m_realmWisp.health.IsAlive();
+    state.fractureStabilised = m_progression.HasFlag(kMistwoodFractureStabilized);
+
+    for (const GatherableNode& node : m_gatherableNodes) {
+        if (node.name == "Cracked Rock" && node.IsDepleted()) {
+            state.crackedRockGathered = true;
+            break;
+        }
+    }
+
+    for (const PlacedBuildable& placed : m_worldState.PlacedBuildables()) {
+        if (placed.buildableId == "camp_marker") {
+            state.placedCampMarker = true;
+        }
+        if (placed.buildableId == "workbench_stub") {
+            state.placedWorkbenchStub = true;
+        }
+    }
+
     return state;
 }
 
