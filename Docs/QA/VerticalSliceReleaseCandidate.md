@@ -184,3 +184,140 @@ The artifact should not contain:
 - CMake/Ninja/Visual Studio intermediate folders
 
 Manual RC verification should now be performed by downloading this artifact from a successful GitHub Actions run, extracting it on Windows, launching `RealmboundWilds.exe`, and running the full checklist above. Rendering, cursor capture, HUD text, prompt/guidance behavior, and save/load still require manual Windows execution.
+
+## Stabilisation Pass 11 CI Artifact Run
+
+Stabilisation Pass 11 downloaded and ran the CI-produced Debug playtest artifact.
+
+### Artifact Tested
+
+Workflow run:
+
+```text
+27777071129
+```
+
+Commit:
+
+```text
+65a8377aeb27bf3ab9bb2786c0fe08e33fb0efa1
+```
+
+Artifact:
+
+```text
+realmbound-wilds-debug-playtest
+```
+
+Extracted test folder:
+
+```text
+C:\tmp\VLG-artifact-test\extracted
+```
+
+### Artifact Contents Result
+
+Pass. The extracted artifact contained:
+
+- `RealmboundWilds.exe`
+- `Game/Data/Buildables/buildables.txt`
+- `Game/Data/Items/items.txt`
+- `Game/Data/Recipes/recipes.txt`
+
+No save file was copied into the artifact folder before launch.
+
+### Artifact Launch Result
+
+Pass. `RealmboundWilds.exe` launched from the extracted artifact folder and opened a live window. The window title reported:
+
+- `Mistwood Hollow`
+- `HP 100`
+- `ST 100`
+- `target None`
+- `enemy Idle 50`
+- `obj fracture unknown`
+- `mouse off`
+
+### Manual Playthrough Pass/Fail Table
+
+This pass used Win32 key events and the app's title/debug output as the observable signal. It did not provide a human visual viewport for precise aiming at scene objects, so any check that depends on visual target acquisition remains not certified by this pass.
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| App opens | Pass | Artifact executable launched and stayed running. |
+| Mistwood Hollow loads | Pass | Window title reported `Mistwood Hollow`. |
+| HUD bars render | Not visually certified | Health/stamina state was visible in the debug title, but render output was not visually inspected. |
+| Debug text renders | Not visually certified | Debug/title text updated; in-window glyph rendering was not visually inspected. |
+| `PROMPT:` line appears | Not visually certified | Prompt rendering requires visual viewport inspection. |
+| `NEXT:` line appears | Not visually certified | Guidance rendering requires visual viewport inspection. |
+| `H` help appears and is accurate | Pass by title/debug output | Help text appeared and listed movement, mouse look, interaction, combat, build, craft, save/load, and exit controls. |
+| Arrow-key look works | Partial | Arrow keys were accepted without crash; camera direction was not visually confirmed. |
+| `M` mouse look enables | Pass by title/debug output | Title changed to `mouse on` and logged `Mouse look enabled`. |
+| Moving mouse changes view direction | Not visually certified | Mouse movement was sent while captured; visual camera motion was not observable from this shell. |
+| Pitch clamps and camera does not flip | Covered by tests, not visually certified | Existing pure tests cover clamp logic. |
+| `M` mouse look disables | Pass by title/debug output | Title changed to `mouse off` and logged `Mouse look disabled`. |
+| Cursor visible/restored after disabling | Partial | The app released mouse-look state; cursor visibility was not visually inspected. |
+| Gather wood, stone, and fiber | Not certified | Requires visual aiming at gatherables. Debug grants were separately verified through title inventory updates. |
+| Prompt changes when aiming at gatherables | Not certified | Requires visual/aiming playthrough. |
+| Cracked Rock missing-tool prompt | Not certified | Requires visual/aiming playthrough. |
+| Craft `primitive_tool` | Pass by title/debug output | Debug crafting produced `primitive_tool:1`. |
+| Gather Cracked Rock | Not certified | Requires visual/aiming playthrough. |
+| Craft `camp_bundle` | Pass by title/debug output | Debug crafting produced `camp_bundle:1`. |
+| Craft `workbench_kit` | Partial | Attempt correctly failed with missing wood after prior craft costs. |
+| Enter build mode with `B` | Pass by title/debug output | Title reported build mode and selected buildable. |
+| Select/place camp or workbench | Pass by title/debug output | `Placed Camp Marker` was logged. |
+| Build prompt appears in build mode | Not visually certified | Build mode title state was confirmed; HUD prompt rendering was not visually inspected. |
+| Fight Realm Wisp | Not certified | Requires visual aiming/combat playthrough. |
+| Direct prompts not masked by Wisp prompt | Covered by tests, not visually certified | Prompt-priority regression test exists. |
+| Defeat Realm Wisp | Not certified | Requires combat playthrough. |
+| Interact with Realm Fracture | Not certified | Requires visual aiming/playthrough. |
+| Missing requirement feedback | Covered by tests/docs, not visually certified | Objective requirement tests cover message construction. |
+| Stabilise Realm Fracture | Not certified | Requires visual aiming/playthrough. |
+| Craft `realm_anchor` | Partial | Attempt correctly failed while recipe was locked. |
+| Press `O` to save | Pass by title/debug output | Logged `Saved game to Saves/quick_save.rwsave`. |
+| Move to new position | Partial | Movement key was sent; visual position was not inspected. |
+| Rotate camera | Partial | Arrow key was sent; visual yaw change was not inspected. |
+| Place or gather something additional | Partial | Camp marker placement was confirmed before save. |
+| Press `P` to load | Pass by title/debug output | Logged `Loaded save data`. |
+| Player position restored | Not visually certified | Save/load succeeded; position restoration was not visually inspected. |
+| Camera yaw/pitch restored | Not visually certified | Save/load succeeded; yaw/pitch restoration was not visually inspected. |
+| Inventory restored | Pass by title/debug output | Inventory after load matched saved title state. |
+| Placed buildables restored | Partial | Build mode/title state remained; visual placed object restoration was not inspected. |
+| Depleted gatherables restored | Not certified | Requires real gather/depletion playthrough. |
+| Realm Fracture state restored | Not certified | Fracture was not stabilised in this pass. |
+| Realm Wisp state restored | Not certified | Wisp was not defeated in this pass. |
+| HUD prompt and `NEXT:` after load | Not visually certified | Requires visual HUD inspection. |
+| Escape exits | Pass | Process exited after Escape. |
+| Cursor not stuck after shutdown | Partial | Process exited cleanly after mouse look was disabled; cursor state was not visually inspected. |
+
+### Bugs Found
+
+No code bugs were confirmed during the artifact launch and shell-driven control checks.
+
+The remaining blocker is verification coverage: this environment can launch the native artifact and send keys, but it cannot honestly complete precise visual aiming, HUD glyph inspection, combat, gatherable depletion, or Realm Fracture interaction as a human playthrough.
+
+### Fixes Made
+
+No code fixes were made in Stabilisation Pass 11.
+
+### Cursor And Mouse Capture Result
+
+Partial pass. `M` toggled mouse-look state on and off, and the executable exited cleanly after mouse look had been disabled. Human-visible cursor restoration after shutdown still needs direct desktop observation.
+
+### HUD, Prompt, And Guidance Result
+
+Partial pass. The title/debug state updated correctly for help, mouse state, inventory, build state, save, and load. The in-window HUD bars, `PROMPT:`, and `NEXT:` glyph rendering still need direct visual confirmation.
+
+### Save/Load Result
+
+Partial pass. Saving created:
+
+```text
+C:\tmp\VLG-artifact-test\extracted\Saves\quick_save.rwsave
+```
+
+Loading reported `Loaded save data`, and inventory state remained consistent after load. Full restoration of visual position, camera orientation, placed buildables, depleted gatherables, Realm Fracture state, and Realm Wisp state still needs a real manual playthrough.
+
+### Final Pass 11 Verdict
+
+The CI artifact is downloadable, extractable, launchable, and capable of basic debug-control/save-load operation. Stabilisation Pass 11 does not fully certify the release candidate as manually playthrough-verified because visual target acquisition, rendered HUD inspection, combat, gatherable depletion, and Realm Fracture completion were not completed from this shell-driven environment.

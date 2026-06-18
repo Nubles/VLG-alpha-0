@@ -426,3 +426,18 @@ Remaining deferred items:
 
 - The downloaded artifact still needs a manual Windows playthrough before the RC is locally certified.
 - Terrain, procedural generation, new content, full UI, settings, input remapping, and other major systems remain deferred.
+
+## Stabilisation Pass 11 Result
+
+Attempted after Stabilisation Pass 10:
+
+- Downloaded the `realmbound-wilds-debug-playtest` artifact from Windows Build run `27777071129` for commit `65a8377aeb27bf3ab9bb2786c0fe08e33fb0efa1`.
+- Extracted the artifact outside the repository and confirmed it contained `RealmboundWilds.exe` plus `Game/Data` runtime files.
+- Launched the artifact successfully and confirmed Mistwood Hollow, health/stamina, help text, mouse-look toggles, debug inventory/crafting/build placement, save, load, and Escape shutdown through title/debug output.
+- Confirmed no save file was copied into the artifact before testing; the quick save was created under the extracted artifact folder during the run.
+
+Result:
+
+- No code bugs were confirmed and no code fixes were made.
+- The artifact is runnable, but this shell-driven verification did not fully certify visual HUD rendering, precise target prompts, gatherable depletion, combat, Realm Fracture interaction, or visible cursor restoration.
+- A true hands-on Windows artifact playthrough is still required before calling the release candidate manually verified.

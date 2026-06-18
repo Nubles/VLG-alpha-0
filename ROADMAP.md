@@ -339,6 +339,7 @@ Completed stabilisation notes:
 - Stabilisation Pass 8 performed release-candidate QA inspection and fixed target prompt priority when a nearby enemy is relevant.
 - Stabilisation Pass 9 attempted local Windows RC verification, but local configure did not complete from this shell; manual playthrough remains required from a working developer environment.
 - Stabilisation Pass 10 adds a GitHub Actions Debug playtest artifact so manual RC verification can use a downloaded CI build.
+- Stabilisation Pass 11 confirms the CI artifact downloads, extracts, launches, accepts basic debug controls, saves, loads, and exits cleanly; full visual target/combat/fracture playthrough is still not certified.
 - Biome layout, drop table, and objective data loading remain deferred.
 
 Primary next direction: review the release-candidate debug vertical slice, then choose the next major phase deliberately.
