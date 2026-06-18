@@ -76,6 +76,9 @@ add_library(GameRuntime STATIC
     Game/Source/SaveLoad/SaveGameService.cpp
     Game/Source/SaveLoad/SaveSerializer.cpp
     Game/Source/SandboxGame.cpp
+    Game/Source/UI/HudFormatter.cpp
+    Game/Source/UI/HudState.cpp
+    Game/Source/UI/VerticalSliceHud.cpp
 )
 
 target_link_libraries(GameRuntime PUBLIC EngineRuntime)
@@ -112,6 +115,7 @@ add_executable(GameCoreTests
     Tests/Game/TestInventory.cpp
     Tests/Game/TestProgressionObjectives.cpp
     Tests/Game/TestSaveLoad.cpp
+    Tests/Game/TestUI.cpp
 )
 
 target_link_libraries(GameCoreTests PRIVATE GameRuntime)

@@ -12,5 +12,6 @@ int main()
     TestCombatAndVitals();
     TestProgressionObjectives();
     TestSaveLoad();
+    TestUI();
     return 0;
 }

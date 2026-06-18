@@ -10,3 +10,4 @@ void TestBuilding();
 void TestCombatAndVitals();
 void TestProgressionObjectives();
 void TestSaveLoad();
+void TestUI();

@@ -43,6 +43,8 @@ void SandboxGame::OnUpdate(float deltaSeconds, const rw::input::InputState& inpu
 void SandboxGame::OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window)
 {
     renderer.Render(window, m_scene, m_player.Camera());
+    m_hud.Render(renderer, window, BuildHudState());
+    renderer.Present(window);
 }
 
 std::string SandboxGame::DebugTitle() const
@@ -472,6 +474,27 @@ std::string SandboxGame::ObjectiveStatus() const
         return "fracture found";
     }
     return "fracture unknown";
+}
+
+HudState SandboxGame::BuildHudState() const
+{
+    HudState state;
+    state.health = m_player.Vitals().Health();
+    state.maxHealth = 100.0F;
+    state.stamina = m_player.Vitals().Stamina();
+    state.maxStamina = 100.0F;
+    state.currentTargetName = TargetName();
+    state.inventorySummary = InventorySummary();
+    state.enemyName = m_realmWisp.name;
+    state.enemyHealth = m_realmWisp.health.Health();
+    state.enemyMaxHealth = m_realmWisp.health.MaxHealth();
+    state.enemyState = ToString(m_realmWisp.state);
+    state.objectiveStatus = ObjectiveStatus();
+    state.buildModeActive = m_buildPlacement.BuildModeActive();
+    state.selectedBuildableName = SelectedBuildableName();
+    state.messages = m_messages.Messages();
+    state.saveLoadMessage = m_lastSaveMessage;
+    return state;
 }
 
 void SandboxGame::PushDebugMessage(const std::string& message)

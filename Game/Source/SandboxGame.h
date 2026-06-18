@@ -19,6 +19,8 @@
 #include "Game/Source/Resources/GatherableNode.h"
 #include "Game/Source/Runtime/SandboxWorldState.h"
 #include "Game/Source/SaveLoad/SaveData.h"
+#include "Game/Source/UI/HudState.h"
+#include "Game/Source/UI/VerticalSliceHud.h"
 
 #include <string>
 #include <vector>
@@ -56,6 +58,7 @@ private:
     std::string SelectedBuildableName() const;
     std::string TargetName() const;
     std::string ObjectiveStatus() const;
+    HudState BuildHudState() const;
     void PushDebugMessage(const std::string& message);
     void GatherTargetNode(GatherableNode& node);
     void AddGatherableNode(const GatherableNode& node, const rw::math::Vec3& color);
@@ -76,6 +79,7 @@ private:
     SandboxWorldState m_worldState;
     Inventory m_inventory;
     Hotbar m_hotbar;
+    VerticalSliceHud m_hud;
     std::vector<Interactable> m_interactables;
     std::vector<GatherableNode> m_gatherableNodes;
     EnemyAgent m_realmWisp;

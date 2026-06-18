@@ -168,13 +168,62 @@ void Renderer::Render(rw::platform::Window& window, const rw::scene::Scene& scen
         }
     }
 
-    EndFrame();
-    window.SwapBuffers();
 #else
     (void)window;
     (void)scene;
     (void)camera;
 #endif
+}
+
+void Renderer::RenderOverlay(rw::platform::Window& window, const std::vector<OverlayRect>& rects)
+{
+#if defined(RW_PLATFORM_WINDOWS)
+    glViewport(0, 0, window.Width(), window.Height());
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, static_cast<double>(window.Width()), static_cast<double>(window.Height()), 0.0, -1.0, 1.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    for (const OverlayRect& rect : rects) {
+        if (rect.width <= 0.0F || rect.height <= 0.0F || rect.alpha <= 0.0F) {
+            continue;
+        }
+
+        glColor4f(rect.color.x, rect.color.y, rect.color.z, rect.alpha);
+        glBegin(GL_QUADS);
+        glVertex2f(rect.x, rect.y);
+        glVertex2f(rect.x + rect.width, rect.y);
+        glVertex2f(rect.x + rect.width, rect.y + rect.height);
+        glVertex2f(rect.x, rect.y + rect.height);
+        glEnd();
+    }
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+#else
+    (void)window;
+    (void)rects;
+#endif
+}
+
+void Renderer::Present(rw::platform::Window& window)
+{
+    EndFrame();
+    window.SwapBuffers();
 }
 
 void Renderer::BeginFrame(rw::platform::Window& window)

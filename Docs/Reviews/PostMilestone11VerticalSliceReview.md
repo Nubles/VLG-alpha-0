@@ -314,6 +314,22 @@ Completed after this review:
 
 Remaining deferred items:
 
-- Do not begin UI/HUD foundation until this onboarding pass is reviewed and CI is green.
+- UI/HUD foundation is now handled by Milestone 12; do not expand it into full UI, text rendering, inventory grids, or mouse interaction without a scoped follow-up.
 - Biome layouts, drop tables, objectives, and enemy definitions remain code-defined until scoped future passes.
 - Do not begin terrain, procedural generation, renderer rewrite, audio/VFX, multiplayer, or new gameplay systems yet.
+
+## Milestone 12 Result
+
+Completed after stabilisation:
+
+- Added generic engine overlay rectangles and explicit renderer presentation so 2D HUD primitives can render after the 3D scene.
+- Added game-side HUD state, formatting helpers, and vertical-slice HUD composition under `Game/Source/UI`.
+- Added visible health and stamina bars plus simple target, objective, enemy, build, and message panel placeholders.
+- Preserved the existing debug title and console/debug messages for readable text.
+- Added pure UI/HUD tests for ratio clamping, target/build/objective formatting, message ordering, and generated overlay rectangles.
+- Added `Docs/Systems/UIHudFoundation.md`.
+
+Remaining deferred items:
+
+- Real text rendering, fonts, inventory grid UI, mouse interaction, drag/drop, asset loading, and full UI layout remain deferred.
+- Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.

@@ -228,6 +228,27 @@ Exit criteria:
 - Debug tools make iteration fast.
 - The project is ready for the next expansion decision.
 
+## Milestone 12: UI/HUD Foundation
+
+Goal: add the first minimal UI/HUD path without introducing UI libraries, font dependencies, or a renderer rewrite.
+
+Deliverables:
+
+- Engine-side generic 2D overlay primitives.
+- Game-side HUD state snapshot.
+- Health and stamina indicators.
+- Target, objective, message, enemy, and build mode panel placeholders.
+- Pure HUD formatting/layout tests.
+- Documentation.
+
+Exit criteria:
+
+- HUD overlay renders on top of the existing 3D sandbox.
+- Health and stamina indicators reflect current player state.
+- Detailed text remains available through the existing title/debug output.
+- Existing vertical-slice controls and flow remain unchanged.
+- CI remains green.
+
 ## Post-Vertical-Slice Stabilisation
 
 Milestones 0-11 have produced the first playable debug vertical slice. Before adding another major gameplay milestone, the project should stabilise the current slice so future systems do not pile onto fragile integration code.

@@ -20,6 +20,7 @@ The current vertical slice includes:
 - Realm Wisp combat
 - Realm Fracture objective
 - save/load
+- minimal HUD overlay bars and panel placeholders
 - debug help, messages, and title output
 - item, recipe, and buildable data loading from `Game/Data`
 
@@ -113,6 +114,7 @@ The path is relative to the process working directory. During normal local runs 
 - [Shrine objective progression](Docs/Systems/ShrineObjectiveProgression.md)
 - [Save/load](Docs/Systems/SaveLoad.md)
 - [Vertical slice polish](Docs/Systems/VerticalSlicePolish.md)
+- [UI/HUD foundation](Docs/Systems/UIHudFoundation.md)
 - [Data loading: items](Docs/Systems/DataLoadingItems.md)
 - [Data loading: recipes](Docs/Systems/DataLoadingRecipes.md)
 - [Data loading: buildables](Docs/Systems/DataLoadingBuildables.md)
@@ -122,7 +124,7 @@ The path is relative to the process working directory. During normal local runs 
 
 Do not jump straight into terrain or procedural generation. The best next decision is either:
 
-- UI/HUD foundation for clearer tester feedback, or
 - another deliberate architecture pass to keep the current vertical slice maintainable.
+- a scoped text/UI planning pass before real fonts, inventory grids, mouse interaction, or final HUD behavior.
 
 Choose the next milestone only after onboarding docs and CI are current and green.

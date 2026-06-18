@@ -99,10 +99,10 @@ ctest --test-dir build -C Debug --output-on-failure
 
 ## Known Limitations
 
-- This is a debug prototype, not final UI.
+- This is a debug prototype with minimal HUD bars and placeholders, not final UI.
 - Objective feedback is text/debug output only.
 - Save/load uses the current prototype serializer.
-- There is no terrain generation, procedural world, audio, VFX, real HUD, or multiplayer.
+- There is no terrain generation, procedural world, audio, VFX, full UI system, or multiplayer.
 - Items, recipes, and buildables load from simple text data files; biome layouts, drop tables, objectives, and enemy definitions remain code-defined.
 - Build placement, combat, and interaction use simple prototype checks.
 

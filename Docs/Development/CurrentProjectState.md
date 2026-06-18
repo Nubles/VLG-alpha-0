@@ -16,6 +16,7 @@ Realmbound Wilds currently has a playable debug vertical slice built on a custom
 - Milestone 9: Realm Fracture objective and progression.
 - Milestone 10: save/load prototype.
 - Milestone 11: vertical slice polish.
+- Milestone 12: UI/HUD foundation with dependency-free overlay bars and debug panels.
 
 ## Completed Stabilisation Passes
 
@@ -66,20 +67,20 @@ These should remain code-defined until their own scoped pass. Do not mix them in
 
 ## Known Limitations
 
-- no real HUD
+- no full UI system or text-rendered HUD
 - no mouse-look
 - no terrain or procedural generation
 - no models, textures, or authored art assets
 - no audio or VFX
 - no multiplayer
 - one quick-save slot
-- debug title/messages are doing most tester feedback work
+- debug title/messages still carry detailed tester feedback text
 
 ## Recommended Next Decision
 
 The next major decision should be one of:
 
-- UI/HUD foundation, so testers get clearer on-screen feedback, or
-- another deliberate architecture pass, so the current vertical slice stays maintainable before larger content work.
+- a deliberate architecture pass, so the current vertical slice stays maintainable before larger content work, or
+- a scoped text/UI planning pass before adding real fonts, inventory grids, mouse interaction, or final HUD behavior.
 
 Do not jump straight into terrain or procedural generation from here.
