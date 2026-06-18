@@ -1,0 +1,5 @@
+# id|display_name|category|primitive|costs|preview_scale|placed_scale|placement_distance|placement_radius
+
+camp_marker|Camp Marker|Camp|Cube|camp_bundle:1|0.8,1,0.8|0.8,1,0.8|3.0|0.75
+workbench_stub|Workbench Stub|Stations|Cube|workbench_kit:1|1.8,0.8,0.9|1.8,0.8,0.9|3.0|1.15
+simple_wall|Simple Wall|Walls|Cube|wood:3,fiber:1|2,1.8,0.25|2,1.8,0.25|3.0|1.05

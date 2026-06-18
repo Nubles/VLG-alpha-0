@@ -247,7 +247,8 @@ Completed stabilisation notes:
 
 - Item definitions now load from `Game/Data/Items/items.txt` with a hardcoded fallback.
 - Recipe definitions now load from `Game/Data/Recipes/recipes.txt` with a hardcoded fallback.
-- Buildable definition data loading is the next smallest data-loading pass.
+- Buildable definitions now load from `Game/Data/Buildables/buildables.txt` with a hardcoded fallback.
+- Biome layout, drop table, and objective data loading remain deferred.
 
 Primary next direction: stabilise the current vertical slice first.
 

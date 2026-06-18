@@ -8,11 +8,70 @@
 #include "Game/Source/Runtime/SandboxWorldState.h"
 
 #include <cassert>
+#include <string>
 #include <vector>
 
 void TestBuilding()
 {
     const rw::game::ItemDatabase database = rw::game::ItemDatabase::CreateStarterDatabase();
+    const std::string validBuildableData =
+        "# id|display_name|category|primitive|costs|preview_scale|placed_scale|placement_distance|placement_radius\n"
+        "\n"
+        "camp_marker|Camp Marker|Camp|Cube|camp_bundle:1|0.8,1,0.8|0.8,1,0.8|3.0|0.75\n"
+        "workbench_stub|Workbench Stub|Stations|Cube|workbench_kit:1|1.8,0.8,0.9|1.8,0.8,0.9|3.0|1.15\n"
+        "simple_wall|Simple Wall|Walls|Cube|wood:3,fiber:1|2,1.8,0.25|2,1.8,0.25|3.0|1.05\n";
+    const rw::game::BuildableDatabaseLoadResult loadedBuildables =
+        rw::game::BuildableDatabase::LoadFromText(validBuildableData);
+    assert(loadedBuildables.success);
+    assert(loadedBuildables.database.FindById("camp_marker") != nullptr);
+    assert(loadedBuildables.database.FindById("workbench_stub") != nullptr);
+    assert(loadedBuildables.database.FindById("simple_wall") != nullptr);
+    assert(loadedBuildables.database.FindById("missing_buildable") == nullptr);
+    assert(loadedBuildables.database.Buildables().size() == 3);
+    assert(loadedBuildables.database.FindById("simple_wall")->costs.size() == 2);
+    assert(loadedBuildables.database.FindById("workbench_stub")->placementRadius == 1.15F);
+
+    const rw::game::BuildableDatabaseLoadResult missingField = rw::game::BuildableDatabase::LoadFromText(
+        "bad_buildable|Bad Buildable|Tests|Cube|wood:1|1,1,1|1,1,1|3.0\n");
+    assert(!missingField.success);
+    assert(missingField.message.find("Expected 9 fields") != std::string::npos);
+
+    const rw::game::BuildableDatabaseLoadResult malformedCost = rw::game::BuildableDatabase::LoadFromText(
+        "bad_buildable|Bad Buildable|Tests|Cube|wood|1,1,1|1,1,1|3.0|1.0\n");
+    assert(!malformedCost.success);
+    assert(malformedCost.message.find("Invalid cost") != std::string::npos);
+
+    const rw::game::BuildableDatabaseLoadResult invalidCostQuantity = rw::game::BuildableDatabase::LoadFromText(
+        "bad_buildable|Bad Buildable|Tests|Cube|wood:0|1,1,1|1,1,1|3.0|1.0\n");
+    assert(!invalidCostQuantity.success);
+    assert(invalidCostQuantity.message.find("cost quantity must be greater than 0") != std::string::npos);
+
+    const rw::game::BuildableDatabaseLoadResult malformedScale = rw::game::BuildableDatabase::LoadFromText(
+        "bad_buildable|Bad Buildable|Tests|Cube|wood:1|1,1|1,1,1|3.0|1.0\n");
+    assert(!malformedScale.success);
+    assert(malformedScale.message.find("Invalid preview_scale") != std::string::npos);
+
+    const rw::game::BuildableDatabaseLoadResult invalidScale = rw::game::BuildableDatabase::LoadFromText(
+        "bad_buildable|Bad Buildable|Tests|Cube|wood:1|1,0,1|1,1,1|3.0|1.0\n");
+    assert(!invalidScale.success);
+    assert(invalidScale.message.find("scale values must be greater than 0") != std::string::npos);
+
+    const rw::game::BuildableDatabaseLoadResult invalidDistance = rw::game::BuildableDatabase::LoadFromText(
+        "bad_buildable|Bad Buildable|Tests|Cube|wood:1|1,1,1|1,1,1|0|1.0\n");
+    assert(!invalidDistance.success);
+    assert(invalidDistance.message.find("placement_distance must be greater than 0") != std::string::npos);
+
+    const rw::game::BuildableDatabaseLoadResult invalidRadius = rw::game::BuildableDatabase::LoadFromText(
+        "bad_buildable|Bad Buildable|Tests|Cube|wood:1|1,1,1|1,1,1|3.0|0\n");
+    assert(!invalidRadius.success);
+    assert(invalidRadius.message.find("placement_radius must be greater than 0") != std::string::npos);
+
+    const rw::game::BuildableDatabase fallbackBuildables = rw::game::BuildableDatabase::CreateFromFileOrFallback(
+        "Game/Data/Buildables/does_not_exist.txt");
+    assert(fallbackBuildables.FindById("camp_marker") != nullptr);
+    assert(fallbackBuildables.FindById("workbench_stub") != nullptr);
+    assert(fallbackBuildables.FindById("simple_wall") != nullptr);
+
     const rw::game::BuildableDatabase buildables = rw::game::BuildableDatabase::CreateStarterBuildables();
     assert(buildables.FindById("camp_marker") != nullptr);
     assert(buildables.FindById("workbench_stub") != nullptr);
@@ -117,4 +176,3 @@ void TestBuilding()
     assert(overlapResult.failureReason == rw::game::BuildPlacementFailureReason::Overlap);
     assert(overlapInventory.TotalQuantity("camp_bundle") == 1);
 }
-

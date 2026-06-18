@@ -7,9 +7,14 @@
 
 namespace rw::game {
 
+struct BuildableDatabaseLoadResult;
+
 class BuildableDatabase {
 public:
     static BuildableDatabase CreateStarterBuildables();
+    static BuildableDatabaseLoadResult LoadFromText(const std::string& text);
+    static BuildableDatabaseLoadResult LoadFromFile(const std::string& path);
+    static BuildableDatabase CreateFromFileOrFallback(const std::string& path);
 
     void AddBuildable(BuildableDefinition buildable);
     const BuildableDefinition* FindById(const std::string& buildableId) const;
@@ -17,6 +22,12 @@ public:
 
 private:
     std::vector<BuildableDefinition> m_buildables;
+};
+
+struct BuildableDatabaseLoadResult {
+    bool success = false;
+    std::string message;
+    BuildableDatabase database;
 };
 
 } // namespace rw::game

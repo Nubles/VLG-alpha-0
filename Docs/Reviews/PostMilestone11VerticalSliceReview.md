@@ -267,3 +267,20 @@ Remaining deferred items:
 - Move buildables to data only after this recipe-loading pass is reviewed.
 - Keep biome layouts, drops, and objectives code-defined until their own scoped passes.
 - Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
+
+## Stabilisation Pass 5 Result
+
+Completed after this review:
+
+- Added `Game/Data/Buildables/buildables.txt` as a pipe-delimited buildable definition file mirroring the existing starter buildables.
+- Added a tiny dependency-free buildable parser with validation for field count, required fields, primitive names, cost syntax, positive costs, scale triples, positive scale values, placement distance, and placement radius.
+- Added `BuildableDatabase::LoadFromText`, `LoadFromFile`, and `CreateFromFileOrFallback`.
+- Updated runtime buildable database construction to load buildable definitions from data first and fall back to hardcoded definitions with a warning.
+- Preserved stable buildable IDs, placement costs, preview scale, placed scale, placement distance, placement radius, and placed buildable instance ID behavior.
+- Added buildable parser coverage to the building/domain tests while preserving existing inventory, crafting, gathering, objective, build placement, and save/load behavior.
+- Added `Docs/Systems/DataLoadingBuildables.md`.
+
+Remaining deferred items:
+
+- Keep biome layouts, drops, and objectives code-defined until their own scoped passes.
+- Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
