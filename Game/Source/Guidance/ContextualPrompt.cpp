@@ -8,11 +8,10 @@ std::string ContextualPrompt::Build(const ContextualPromptState& state)
         return "ENTER PLACE - Q/R ROTATE - CANCEL";
     }
 
-    if (state.enemyRelevant && !state.enemyName.empty()) {
-        return "C ATTACK " + state.enemyName;
-    }
-
     if (!state.hasTarget) {
+        if (state.enemyRelevant && !state.enemyName.empty()) {
+            return "C ATTACK " + state.enemyName;
+        }
         return "EXPLORE MISTWOOD HOLLOW";
     }
 

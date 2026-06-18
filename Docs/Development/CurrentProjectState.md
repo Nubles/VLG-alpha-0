@@ -30,6 +30,7 @@ Realmbound Wilds currently has a playable debug vertical slice built on a custom
 - Pass 5: buildable definitions load from `Game/Data/Buildables/buildables.txt`.
 - Pass 6: item, recipe, and buildable text-loading helpers consolidated in `Game/Source/Data/DataTextParser`.
 - Pass 7: developer onboarding, README, CI guide, and current-state docs.
+- Pass 8: vertical slice release-candidate QA, stability inspection, prompt-priority fix, and RC checklist.
 
 ## Current Data-Loaded Definitions
 

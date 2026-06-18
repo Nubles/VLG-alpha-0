@@ -317,7 +317,7 @@ Exit criteria:
 
 ## Post-Vertical-Slice Stabilisation
 
-Milestones 0-11 have produced the first playable debug vertical slice. Before adding another major gameplay milestone, the project should stabilise the current slice so future systems do not pile onto fragile integration code.
+Milestones 0-15 have produced the first playable debug vertical slice with HUD text, mouse-look support, contextual prompts, and next-step guidance. Before adding another major gameplay milestone, the project should stabilise the current slice so future systems do not pile onto fragile integration code.
 
 Recommended cleanup order:
 
@@ -336,9 +336,10 @@ Completed stabilisation notes:
 - Recipe definitions now load from `Game/Data/Recipes/recipes.txt` with a hardcoded fallback.
 - Buildable definitions now load from `Game/Data/Buildables/buildables.txt` with a hardcoded fallback.
 - Item, recipe, and buildable data loading now share small parser helpers in `Game/Source/Data`.
+- Stabilisation Pass 8 performed release-candidate QA inspection and fixed target prompt priority when a nearby enemy is relevant.
 - Biome layout, drop table, and objective data loading remain deferred.
 
-Primary next direction: finish the current stabilisation documentation handoff, then choose the next major phase deliberately.
+Primary next direction: review the release-candidate debug vertical slice, then choose the next major phase deliberately.
 
 Next milestone options after stabilisation:
 

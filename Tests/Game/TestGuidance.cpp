@@ -47,6 +47,11 @@ void TestGuidance()
     prompt.enemyName = "Realm Wisp";
     assert(rw::game::ContextualPrompt::Build(prompt) == "C ATTACK Realm Wisp");
 
+    prompt.hasTarget = true;
+    prompt.targetIsGatherable = true;
+    prompt.targetName = "Branch Pile";
+    assert(rw::game::ContextualPrompt::Build(prompt) == "E GATHER Branch Pile");
+
     rw::game::VerticalSliceGuideState guide;
     assert(rw::game::VerticalSliceGuide::NextStep(guide) == "NEXT: PRESS M FOR MOUSE LOOK");
 

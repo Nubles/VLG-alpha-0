@@ -381,3 +381,17 @@ Remaining deferred items:
 
 - Full quest system, tutorial manager, objective data loading, popups, dialogue, inventory UI, crafting menu, mouse UI interaction, and new content remain deferred.
 - Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.
+
+## Stabilisation Pass 8 Result
+
+Completed after Milestone 15:
+
+- Added `Docs/QA/VerticalSliceReleaseCandidate.md` as the release-candidate QA checklist and stability report.
+- Inspected mouse capture, HUD/guidance, save/load, data fallback, and documentation accuracy.
+- Fixed contextual prompt priority so a direct gatherable/interactable target is not masked by a nearby Realm Wisp prompt.
+- Added a regression assertion for target prompt priority in `TestGuidance`.
+
+Remaining deferred items:
+
+- A local interactive Windows playthrough is still recommended on a machine with CMake/build tools available.
+- Terrain, procedural generation, new biomes, new enemies, new content, full UI, settings, and input remapping remain deferred.
