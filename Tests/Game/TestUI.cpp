@@ -1,5 +1,6 @@
 #include "Tests/Game/GameTestSuite.h"
 
+#include "Engine/Renderer/DebugTextRenderer.h"
 #include "Game/Source/UI/HudFormatter.h"
 #include "Game/Source/UI/VerticalSliceHud.h"
 
@@ -17,7 +18,12 @@ void TestUI()
     state.objectiveStatus = "fracture stable";
     state.buildModeActive = false;
     state.selectedBuildableName = "Camp Marker";
+    state.enemyName = "Realm Wisp";
+    state.enemyHealth = 35.0F;
+    state.enemyMaxHealth = 50.0F;
+    state.enemyState = "Chasing";
     state.messages = { "first", "second", "third" };
+    state.saveLoadMessage = "Saved game";
 
     assert(rw::game::HudFormatter::ClampedRatio(75.0F, 100.0F) == 0.75F);
     assert(rw::game::HudFormatter::ClampedRatio(150.0F, 100.0F) == 1.0F);
@@ -37,6 +43,19 @@ void TestUI()
     rw::game::VerticalSliceHud hud;
     const std::vector<rw::renderer::OverlayRect> rects = hud.BuildOverlay(state, 1280, 720);
     assert(!rects.empty());
+    const std::vector<rw::renderer::OverlayRect> textRects = hud.BuildTextOverlay(state, 1280, 720);
+    assert(!textRects.empty());
+    const std::vector<std::string> textLines = hud.BuildTextLines(state);
+    assert(textLines[0] == "HP 75/100");
+    assert(textLines[1] == "ST 25/50");
+    assert(textLines[2] == "TARGET: None");
+    assert(textLines[3] == "OBJECTIVE: fracture stable");
+    assert(textLines[4] == "Realm Wisp 35/50 Chasing");
+    assert(textLines[5] == "Build: Camp Marker");
+    assert(textLines[6] == "first");
+    assert(textLines[7] == "second");
+    assert(textLines[8] == "third");
+    assert(textLines[9] == "SAVE: Saved game");
 
     bool foundHealthFill = false;
     bool foundStaminaFill = false;
@@ -56,4 +75,11 @@ void TestUI()
     assert(foundHealthFill);
     assert(foundStaminaFill);
     assert(foundBuildIndicator);
+
+    const std::string healthText = rw::renderer::DebugTextRenderer::Sanitize("HP 75/100");
+    const std::string targetText = rw::renderer::DebugTextRenderer::Sanitize("TARGET: None");
+    const std::string objectiveText = rw::renderer::DebugTextRenderer::Sanitize("OBJECTIVE: fracture stable");
+    assert(healthText == "HP 75/100");
+    assert(targetText == "TARGET: NONE");
+    assert(objectiveText == "OBJECTIVE: FRACTURE STABLE");
 }

@@ -24,6 +24,7 @@ add_library(EngineRuntime STATIC
     Engine/Math/Vec2.cpp
     Engine/Math/Vec3.cpp
     Engine/Platform/Window.cpp
+    Engine/Renderer/DebugTextRenderer.cpp
     Engine/Renderer/Renderer.cpp
     Engine/Scene/Camera.cpp
     Engine/Scene/Scene.cpp

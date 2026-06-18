@@ -21,6 +21,7 @@ The current vertical slice includes:
 - Realm Fracture objective
 - save/load
 - minimal HUD overlay bars and panel placeholders
+- dependency-free debug text overlay
 - debug help, messages, and title output
 - item, recipe, and buildable data loading from `Game/Data`
 
@@ -115,6 +116,7 @@ The path is relative to the process working directory. During normal local runs 
 - [Save/load](Docs/Systems/SaveLoad.md)
 - [Vertical slice polish](Docs/Systems/VerticalSlicePolish.md)
 - [UI/HUD foundation](Docs/Systems/UIHudFoundation.md)
+- [Debug text overlay](Docs/Systems/DebugTextOverlay.md)
 - [Data loading: items](Docs/Systems/DataLoadingItems.md)
 - [Data loading: recipes](Docs/Systems/DataLoadingRecipes.md)
 - [Data loading: buildables](Docs/Systems/DataLoadingBuildables.md)

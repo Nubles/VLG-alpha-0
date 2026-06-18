@@ -333,3 +333,19 @@ Remaining deferred items:
 
 - Real text rendering, fonts, inventory grid UI, mouse interaction, drag/drop, asset loading, and full UI layout remain deferred.
 - Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.
+
+## Milestone 13 Result
+
+Completed after Milestone 12:
+
+- Added a dependency-free engine `DebugTextRenderer` with a small built-in 5x7 rectangle glyph table.
+- Added generic `OverlayText` input and text-to-`OverlayRect` generation with sanitization and optional max character limits.
+- Updated `VerticalSliceHud` to render readable in-game labels for health, stamina, target, objective, enemy, build mode, recent messages, and save/load feedback.
+- Preserved the existing window-title summary and console/debug logs.
+- Added pure tests for glyph support, sanitization, max character limits, empty text, generated text rectangles, and HUD text line generation.
+- Added `Docs/Systems/DebugTextOverlay.md`.
+
+Remaining deferred items:
+
+- Real font rendering, UI layout, inventory grids, mouse interaction, drag/drop, menus, and settings screens remain deferred.
+- Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.

@@ -17,6 +17,7 @@ Realmbound Wilds currently has a playable debug vertical slice built on a custom
 - Milestone 10: save/load prototype.
 - Milestone 11: vertical slice polish.
 - Milestone 12: UI/HUD foundation with dependency-free overlay bars and debug panels.
+- Milestone 13: dependency-free debug text overlay using built-in rectangle glyphs.
 
 ## Completed Stabilisation Passes
 
@@ -67,14 +68,14 @@ These should remain code-defined until their own scoped pass. Do not mix them in
 
 ## Known Limitations
 
-- no full UI system or text-rendered HUD
+- no full UI system or real font-rendered HUD
 - no mouse-look
 - no terrain or procedural generation
 - no models, textures, or authored art assets
 - no audio or VFX
 - no multiplayer
 - one quick-save slot
-- debug title/messages still carry detailed tester feedback text
+- debug title/messages still mirror detailed tester feedback text
 
 ## Recommended Next Decision
 

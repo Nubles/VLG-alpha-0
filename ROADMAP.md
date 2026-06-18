@@ -249,6 +249,26 @@ Exit criteria:
 - Existing vertical-slice controls and flow remain unchanged.
 - CI remains green.
 
+## Milestone 13: Debug Text Overlay Foundation
+
+Goal: add readable dependency-free debug text to the existing HUD without adding a full UI system or font dependency.
+
+Deliverables:
+
+- Built-in monospaced rectangle glyph text renderer.
+- Generic engine-side text-to-overlay-rect generation.
+- HUD text labels for health, stamina, target, objective, enemy, build mode, messages, and save/load feedback.
+- Pure tests for glyph support, sanitization, max character limits, and HUD text generation.
+- Documentation.
+
+Exit criteria:
+
+- Debug text renders in-game through the existing overlay path.
+- Window title and console/debug logging still work.
+- No external font library, ImGui, DirectWrite, asset loading, or UI framework is added.
+- Existing vertical-slice controls and flow remain unchanged.
+- CI remains green.
+
 ## Post-Vertical-Slice Stabilisation
 
 Milestones 0-11 have produced the first playable debug vertical slice. Before adding another major gameplay milestone, the project should stabilise the current slice so future systems do not pile onto fragile integration code.

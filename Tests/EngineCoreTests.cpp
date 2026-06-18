@@ -1,6 +1,7 @@
 #include "Engine/Input/InputState.h"
 #include "Engine/Math/Mat4.h"
 #include "Engine/Math/Vec3.h"
+#include "Engine/Renderer/DebugTextRenderer.h"
 #include "Game/Source/Interactable.h"
 #include "Game/Source/PlayerVitals.h"
 
@@ -78,6 +79,29 @@ int main()
     interactable.interactionRadius = 0.75F;
     assert(interactable.HitBy({ { 0.0F, 0.0F, 0.0F }, { 0.0F, 0.0F, -1.0F }, 6.0F }));
     assert(!interactable.HitBy({ { 0.0F, 0.0F, 0.0F }, { 1.0F, 0.0F, 0.0F }, 6.0F }));
+
+    assert(rw::renderer::DebugTextRenderer::HasGlyph('A'));
+    assert(rw::renderer::DebugTextRenderer::HasGlyph('Z'));
+    assert(rw::renderer::DebugTextRenderer::HasGlyph('0'));
+    assert(rw::renderer::DebugTextRenderer::HasGlyph('9'));
+    assert(rw::renderer::DebugTextRenderer::HasGlyph(':'));
+    assert(rw::renderer::DebugTextRenderer::HasGlyph('-'));
+    assert(rw::renderer::DebugTextRenderer::HasGlyph('_'));
+    assert(!rw::renderer::DebugTextRenderer::HasGlyph('@'));
+
+    assert(rw::renderer::DebugTextRenderer::Sanitize("hp: 10/20!") == "HP: 10/20!");
+    assert(rw::renderer::DebugTextRenderer::Sanitize("bad@text\nok") == "BAD?TEXT OK");
+    assert(rw::renderer::DebugTextRenderer::Sanitize("abcdef", 3) == "ABC");
+
+    rw::renderer::OverlayText emptyText;
+    assert(rw::renderer::DebugTextRenderer::BuildTextRects(emptyText).empty());
+
+    rw::renderer::OverlayText text;
+    text.text = "A0:-_";
+    text.x = 4.0F;
+    text.y = 8.0F;
+    text.scale = 2.0F;
+    assert(!rw::renderer::DebugTextRenderer::BuildTextRects(text).empty());
 
     return 0;
 }
