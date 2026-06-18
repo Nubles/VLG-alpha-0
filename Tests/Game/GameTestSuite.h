@@ -1,6 +1,7 @@
 #pragma once
 
 void TestDebugSystems();
+void TestDataTextParser();
 void TestBiomeDefinitionsAndLayout();
 void TestInventoryAndHotbar();
 void TestGathering();
@@ -9,4 +10,3 @@ void TestBuilding();
 void TestCombatAndVitals();
 void TestProgressionObjectives();
 void TestSaveLoad();
-

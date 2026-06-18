@@ -16,7 +16,7 @@ void TestCrafting()
     const std::string validRecipeData =
         "# id|display_name|output_item_id|output_quantity|required_station_id|required_unlock_flag|ingredients\n"
         "\n"
-        "primitive_tool|Primitive Tool|primitive_tool|1|||wood:1,stone:1,fiber:1\n"
+        " primitive_tool | Primitive Tool | primitive_tool | 1 | | | wood:1, stone:1, fiber:1 \n"
         "realm_anchor|Realm Anchor|realm_anchor|1||recipe_realm_anchor_unlocked|workbench_kit:1,fiber:5,stone:5\n";
     const rw::game::RecipeDatabaseLoadResult loadedRecipes = rw::game::RecipeDatabase::LoadFromText(validRecipeData);
     assert(loadedRecipes.success);

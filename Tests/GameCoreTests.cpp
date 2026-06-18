@@ -3,6 +3,7 @@
 int main()
 {
     TestDebugSystems();
+    TestDataTextParser();
     TestBiomeDefinitionsAndLayout();
     TestInventoryAndHotbar();
     TestGathering();

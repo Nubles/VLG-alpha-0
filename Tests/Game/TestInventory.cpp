@@ -12,7 +12,7 @@ void TestInventoryAndHotbar()
     const std::string validItemData =
         "# id|display_name|description|category|max_stack|tier\n"
         "\n"
-        "wood|Wood|A sturdy piece of weathered timber.|Resource|50|0\n"
+        " wood | Wood | A sturdy piece of weathered timber. | Resource | 50 | 0 \n"
         "realm_anchor|Realm Anchor|A crude anchor of stabilized realm energy. It has no world function yet.|Tool|1|0\n";
     const rw::game::ItemDatabaseLoadResult loadedItems = rw::game::ItemDatabase::LoadFromText(validItemData);
     assert(loadedItems.success);

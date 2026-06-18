@@ -1,27 +1,15 @@
 #include "Game/Source/Items/ItemDatabase.h"
 
 #include "Engine/Core/Logger.h"
+#include "Game/Source/Data/DataTextParser.h"
 
-#include <fstream>
 #include <sstream>
 #include <string>
 #include <utility>
-#include <vector>
 
 namespace rw::game {
 
 namespace {
-
-std::vector<std::string> Split(const std::string& value, char delimiter)
-{
-    std::vector<std::string> parts;
-    std::stringstream stream(value);
-    std::string part;
-    while (std::getline(stream, part, delimiter)) {
-        parts.push_back(part);
-    }
-    return parts;
-}
 
 bool ParseCategory(const std::string& text, ItemCategory& outCategory)
 {
@@ -38,20 +26,6 @@ bool ParseCategory(const std::string& text, ItemCategory& outCategory)
         return true;
     }
     return false;
-}
-
-std::string ReadFileText(const std::string& path, bool& outSuccess)
-{
-    std::ifstream file(path);
-    if (!file.is_open()) {
-        outSuccess = false;
-        return {};
-    }
-
-    std::ostringstream text;
-    text << file.rdbuf();
-    outSuccess = true;
-    return text.str();
 }
 
 } // namespace
@@ -80,15 +54,15 @@ ItemDatabaseLoadResult ItemDatabase::LoadFromText(const std::string& text)
 
     while (std::getline(stream, line)) {
         ++lineNumber;
-        if (line.empty() || line[0] == '#') {
+        if (data::IsCommentOrBlankLine(line)) {
             continue;
         }
 
-        const std::vector<std::string> fields = Split(line, '|');
+        const std::vector<std::string> fields = data::Split(line, '|');
         if (fields.size() != 6) {
             return {
                 false,
-                "Item data line " + std::to_string(lineNumber) + ": Expected 6 fields",
+                data::MakeLineError("Item", lineNumber, "Expected 6 fields"),
                 {},
             };
         }
@@ -97,7 +71,7 @@ ItemDatabaseLoadResult ItemDatabase::LoadFromText(const std::string& text)
             if (field.empty()) {
                 return {
                     false,
-                    "Item data line " + std::to_string(lineNumber) + ": Required field is empty",
+                    data::MakeLineError("Item", lineNumber, "Required field is empty"),
                     {},
                 };
             }
@@ -107,28 +81,26 @@ ItemDatabaseLoadResult ItemDatabase::LoadFromText(const std::string& text)
         if (!ParseCategory(fields[3], category)) {
             return {
                 false,
-                "Item data line " + std::to_string(lineNumber) + ": Unknown item category '" + fields[3] + "'",
+                data::MakeLineError("Item", lineNumber, "Unknown item category '" + fields[3] + "'"),
                 {},
             };
         }
 
         int maxStackSize = 0;
         int resourceTier = 0;
+        if (!data::ParsePositiveInt(fields[4], maxStackSize)) {
+            return {
+                false,
+                data::MakeLineError("Item", lineNumber, "max_stack must be greater than 0"),
+                {},
+            };
+        }
         try {
-            maxStackSize = std::stoi(fields[4]);
             resourceTier = std::stoi(fields[5]);
         } catch (...) {
             return {
                 false,
-                "Item data line " + std::to_string(lineNumber) + ": Invalid numeric field",
-                {},
-            };
-        }
-
-        if (maxStackSize <= 0) {
-            return {
-                false,
-                "Item data line " + std::to_string(lineNumber) + ": max_stack must be greater than 0",
+                data::MakeLineError("Item", lineNumber, "Invalid numeric field"),
                 {},
             };
         }
@@ -153,7 +125,7 @@ ItemDatabaseLoadResult ItemDatabase::LoadFromText(const std::string& text)
 ItemDatabaseLoadResult ItemDatabase::LoadFromFile(const std::string& path)
 {
     bool readSuccess = false;
-    const std::string text = ReadFileText(path, readSuccess);
+    const std::string text = data::ReadFileText(path, readSuccess);
     if (!readSuccess) {
         return { false, "Could not open item data file: " + path, {} };
     }

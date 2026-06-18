@@ -1,8 +1,8 @@
 #include "Game/Source/Building/BuildableDatabase.h"
 
 #include "Engine/Core/Logger.h"
+#include "Game/Source/Data/DataTextParser.h"
 
-#include <fstream>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -11,31 +11,6 @@
 namespace rw::game {
 
 namespace {
-
-std::vector<std::string> Split(const std::string& value, char delimiter)
-{
-    std::vector<std::string> parts;
-    std::stringstream stream(value);
-    std::string part;
-    while (std::getline(stream, part, delimiter)) {
-        parts.push_back(part);
-    }
-    return parts;
-}
-
-std::string ReadFileText(const std::string& path, bool& outSuccess)
-{
-    std::ifstream file(path);
-    if (!file.is_open()) {
-        outSuccess = false;
-        return {};
-    }
-
-    std::ostringstream text;
-    text << file.rdbuf();
-    outSuccess = true;
-    return text.str();
-}
 
 bool ParsePrimitive(const std::string& text, rw::scene::DebugPrimitive& outPrimitive)
 {
@@ -46,49 +21,28 @@ bool ParsePrimitive(const std::string& text, rw::scene::DebugPrimitive& outPrimi
     return false;
 }
 
-bool ParsePositiveInt(const std::string& text, int& outValue)
-{
-    try {
-        outValue = std::stoi(text);
-    } catch (...) {
-        return false;
-    }
-    return outValue > 0;
-}
-
-bool ParsePositiveFloat(const std::string& text, float& outValue)
-{
-    try {
-        outValue = std::stof(text);
-    } catch (...) {
-        return false;
-    }
-    return outValue > 0.0F;
-}
-
 bool ParseCosts(
     const std::string& text,
     int lineNumber,
     std::vector<BuildCost>& outCosts,
     std::string& outError)
 {
-    const std::vector<std::string> costTexts = Split(text, ',');
+    const std::vector<std::string> costTexts = data::Split(text, ',');
     if (costTexts.empty()) {
-        outError = "Buildable data line " + std::to_string(lineNumber) + ": cost list must not be empty";
+        outError = data::MakeLineError("Buildable", lineNumber, "cost list must not be empty");
         return false;
     }
 
     for (const std::string& costText : costTexts) {
-        const std::vector<std::string> parts = Split(costText, ':');
+        const std::vector<std::string> parts = data::Split(costText, ':');
         if (parts.size() != 2 || parts[0].empty() || parts[1].empty()) {
-            outError = "Buildable data line " + std::to_string(lineNumber) + ": Invalid cost '" + costText + "'";
+            outError = data::MakeLineError("Buildable", lineNumber, "Invalid cost '" + costText + "'");
             return false;
         }
 
         int quantity = 0;
-        if (!ParsePositiveInt(parts[1], quantity)) {
-            outError = "Buildable data line " + std::to_string(lineNumber)
-                + ": cost quantity must be greater than 0";
+        if (!data::ParsePositiveInt(parts[1], quantity)) {
+            outError = data::MakeLineError("Buildable", lineNumber, "cost quantity must be greater than 0");
             return false;
         }
 
@@ -98,35 +52,17 @@ bool ParseCosts(
     return true;
 }
 
-bool ParseScale(
+bool ParsePositiveScale(
     const std::string& text,
     const std::string& fieldName,
     int lineNumber,
     rw::math::Vec3& outScale,
     std::string& outError)
 {
-    const std::vector<std::string> parts = Split(text, ',');
-    if (parts.size() != 3) {
+    if (!data::ParseVec3Triple(text, outScale)) {
         outError = "Buildable data line " + std::to_string(lineNumber) + ": Invalid " + fieldName;
         return false;
     }
-
-    try {
-        outScale = {
-            std::stof(parts[0]),
-            std::stof(parts[1]),
-            std::stof(parts[2]),
-        };
-    } catch (...) {
-        outError = "Buildable data line " + std::to_string(lineNumber) + ": Invalid " + fieldName;
-        return false;
-    }
-
-    if (outScale.x <= 0.0F || outScale.y <= 0.0F || outScale.z <= 0.0F) {
-        outError = "Buildable data line " + std::to_string(lineNumber) + ": scale values must be greater than 0";
-        return false;
-    }
-
     return true;
 }
 
@@ -194,15 +130,15 @@ BuildableDatabaseLoadResult BuildableDatabase::LoadFromText(const std::string& t
 
     while (std::getline(stream, line)) {
         ++lineNumber;
-        if (line.empty() || line[0] == '#') {
+        if (data::IsCommentOrBlankLine(line)) {
             continue;
         }
 
-        const std::vector<std::string> fields = Split(line, '|');
+        const std::vector<std::string> fields = data::Split(line, '|');
         if (fields.size() != 9) {
             return {
                 false,
-                "Buildable data line " + std::to_string(lineNumber) + ": Expected 9 fields",
+                data::MakeLineError("Buildable", lineNumber, "Expected 9 fields"),
                 {},
             };
         }
@@ -210,7 +146,7 @@ BuildableDatabaseLoadResult BuildableDatabase::LoadFromText(const std::string& t
         if (!HasRequiredBuildableFields(fields)) {
             return {
                 false,
-                "Buildable data line " + std::to_string(lineNumber) + ": Required field is empty",
+                data::MakeLineError("Buildable", lineNumber, "Required field is empty"),
                 {},
             };
         }
@@ -219,7 +155,7 @@ BuildableDatabaseLoadResult BuildableDatabase::LoadFromText(const std::string& t
         if (!ParsePrimitive(fields[3], primitive)) {
             return {
                 false,
-                "Buildable data line " + std::to_string(lineNumber) + ": Unknown primitive '" + fields[3] + "'",
+                data::MakeLineError("Buildable", lineNumber, "Unknown primitive '" + fields[3] + "'"),
                 {},
             };
         }
@@ -233,29 +169,27 @@ BuildableDatabaseLoadResult BuildableDatabase::LoadFromText(const std::string& t
         rw::math::Vec3 previewScale;
         rw::math::Vec3 placedScale;
         std::string scaleError;
-        if (!ParseScale(fields[5], "preview_scale", lineNumber, previewScale, scaleError)) {
+        if (!ParsePositiveScale(fields[5], "preview_scale", lineNumber, previewScale, scaleError)) {
             return { false, scaleError, {} };
         }
-        if (!ParseScale(fields[6], "placed_scale", lineNumber, placedScale, scaleError)) {
+        if (!ParsePositiveScale(fields[6], "placed_scale", lineNumber, placedScale, scaleError)) {
             return { false, scaleError, {} };
         }
 
         float placementDistance = 0.0F;
-        if (!ParsePositiveFloat(fields[7], placementDistance)) {
+        if (!data::ParsePositiveFloat(fields[7], placementDistance)) {
             return {
                 false,
-                "Buildable data line " + std::to_string(lineNumber)
-                    + ": placement_distance must be greater than 0",
+                data::MakeLineError("Buildable", lineNumber, "placement_distance must be greater than 0"),
                 {},
             };
         }
 
         float placementRadius = 0.0F;
-        if (!ParsePositiveFloat(fields[8], placementRadius)) {
+        if (!data::ParsePositiveFloat(fields[8], placementRadius)) {
             return {
                 false,
-                "Buildable data line " + std::to_string(lineNumber)
-                    + ": placement_radius must be greater than 0",
+                data::MakeLineError("Buildable", lineNumber, "placement_radius must be greater than 0"),
                 {},
             };
         }
@@ -283,7 +217,7 @@ BuildableDatabaseLoadResult BuildableDatabase::LoadFromText(const std::string& t
 BuildableDatabaseLoadResult BuildableDatabase::LoadFromFile(const std::string& path)
 {
     bool readSuccess = false;
-    const std::string text = ReadFileText(path, readSuccess);
+    const std::string text = data::ReadFileText(path, readSuccess);
     if (!readSuccess) {
         return { false, "Could not open buildable data file: " + path, {} };
     }

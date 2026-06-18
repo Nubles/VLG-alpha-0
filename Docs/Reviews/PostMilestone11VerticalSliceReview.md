@@ -268,6 +268,23 @@ Remaining deferred items:
 - Keep biome layouts, drops, and objectives code-defined until their own scoped passes.
 - Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
 
+## Stabilisation Pass 6 Result
+
+Completed after this review:
+
+- Added `Game/Source/Data/DataTextParser` to consolidate small text-loading helpers used by item, recipe, and buildable loading.
+- Refactored item, recipe, and buildable loaders to use shared helpers for file reading, splitting, comment/blank-line handling, positive number parsing, `Vec3` triples, trimming, and line-error formatting.
+- Preserved the existing item, recipe, and buildable data file formats.
+- Preserved hardcoded fallback behavior for all three databases.
+- Added focused `DataTextParser` tests and whitespace-tolerant parser coverage for item, recipe, and buildable rows.
+- Added `Docs/Systems/DataLoadingConsolidation.md`.
+
+Remaining deferred items:
+
+- Duplicate ID validation remains a future low-risk improvement.
+- Biome layouts, drop tables, and objectives remain code-defined until their own scoped passes.
+- Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
+
 ## Stabilisation Pass 5 Result
 
 Completed after this review:

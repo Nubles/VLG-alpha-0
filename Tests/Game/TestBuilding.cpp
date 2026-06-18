@@ -17,7 +17,7 @@ void TestBuilding()
     const std::string validBuildableData =
         "# id|display_name|category|primitive|costs|preview_scale|placed_scale|placement_distance|placement_radius\n"
         "\n"
-        "camp_marker|Camp Marker|Camp|Cube|camp_bundle:1|0.8,1,0.8|0.8,1,0.8|3.0|0.75\n"
+        " camp_marker | Camp Marker | Camp | Cube | camp_bundle:1 | 0.8, 1, 0.8 | 0.8, 1, 0.8 | 3.0 | 0.75 \n"
         "workbench_stub|Workbench Stub|Stations|Cube|workbench_kit:1|1.8,0.8,0.9|1.8,0.8,0.9|3.0|1.15\n"
         "simple_wall|Simple Wall|Walls|Cube|wood:3,fiber:1|2,1.8,0.25|2,1.8,0.25|3.0|1.05\n";
     const rw::game::BuildableDatabaseLoadResult loadedBuildables =
@@ -54,7 +54,7 @@ void TestBuilding()
     const rw::game::BuildableDatabaseLoadResult invalidScale = rw::game::BuildableDatabase::LoadFromText(
         "bad_buildable|Bad Buildable|Tests|Cube|wood:1|1,0,1|1,1,1|3.0|1.0\n");
     assert(!invalidScale.success);
-    assert(invalidScale.message.find("scale values must be greater than 0") != std::string::npos);
+    assert(invalidScale.message.find("Invalid preview_scale") != std::string::npos);
 
     const rw::game::BuildableDatabaseLoadResult invalidDistance = rw::game::BuildableDatabase::LoadFromText(
         "bad_buildable|Bad Buildable|Tests|Cube|wood:1|1,1,1|1,1,1|0|1.0\n");
