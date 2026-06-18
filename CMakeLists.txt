@@ -85,6 +85,12 @@ add_executable(RealmboundWilds
 
 target_link_libraries(RealmboundWilds PRIVATE GameRuntime)
 
+add_custom_command(TARGET RealmboundWilds POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/Game/Data
+        $<TARGET_FILE_DIR:RealmboundWilds>/Game/Data
+)
+
 add_executable(EngineCoreTests
     Tests/EngineCoreTests.cpp
 )

@@ -17,7 +17,7 @@
 namespace rw::game {
 
 SandboxGame::SandboxGame()
-    : m_itemDatabase(ItemDatabase::CreateStarterDatabase())
+    : m_itemDatabase(ItemDatabase::CreateFromFileOrFallback("Game/Data/Items/items.txt"))
     , m_recipeDatabase(RecipeDatabase::CreateStarterRecipes())
     , m_biomeDatabase(BiomeDatabase::CreateStarterBiomes())
     , m_buildableDatabase(BuildableDatabase::CreateStarterBuildables())

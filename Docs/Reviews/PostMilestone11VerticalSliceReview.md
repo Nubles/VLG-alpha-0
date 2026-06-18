@@ -232,3 +232,20 @@ Remaining deferred items:
 - Continue extracting runtime coordination out of `SandboxGame` only when it stays low risk.
 - Start minimal data loading only after stabilisation work is complete.
 - Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
+
+## Stabilisation Pass 3 Result
+
+Completed after this review:
+
+- Added `Game/Data/Items/items.txt` as a pipe-delimited item definition file mirroring the existing starter item definitions.
+- Added a tiny dependency-free item parser with validation for field count, empty required fields, known categories, numeric fields, and positive stack sizes.
+- Added `ItemDatabase::LoadFromText`, `LoadFromFile`, and `CreateFromFileOrFallback`.
+- Updated runtime item database construction to load item definitions from data first and fall back to hardcoded definitions with a warning.
+- Added item parser coverage to the inventory/domain tests while preserving existing inventory, crafting, gathering, building, objective, and save/load behavior.
+- Added `Docs/Systems/DataLoadingItems.md`.
+
+Remaining deferred items:
+
+- Move recipes to data only after this item-loading pass is reviewed.
+- Keep buildables, biome layouts, drops, and objectives code-defined until their own scoped passes.
+- Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.

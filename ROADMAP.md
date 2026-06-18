@@ -241,7 +241,12 @@ Recommended cleanup order:
 5. Update developer/manual QA documentation around the full happy path.
 6. Add camera yaw/pitch to save/load.
 7. Improve objective requirement feedback.
-8. Begin a minimal data-loading pass for item definitions, then recipes, then buildables.
+8. Complete a minimal data-loading pass for item definitions, then recipes, then buildables.
+
+Completed stabilisation notes:
+
+- Item definitions now load from `Game/Data/Items/items.txt` with a hardcoded fallback.
+- Recipe data loading is the next smallest data-loading pass.
 
 Primary next direction: stabilise the current vertical slice first.
 

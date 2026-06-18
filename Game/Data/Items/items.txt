@@ -1,0 +1,11 @@
+# id|display_name|description|category|max_stack|tier
+
+wood|Wood|A sturdy piece of weathered timber.|Resource|50|0
+stone|Stone|A useful chunk of rough stone.|Resource|50|0
+fiber|Fiber|Tough plant fiber for simple bindings.|Resource|50|0
+raw_food|Raw Food|Unprepared forage from the wilds.|Food|20|0
+primitive_tool|Primitive Tool|A crude tool for early survival work.|Tool|1|0
+camp_bundle|Camp Bundle|A packed camp starter for later building tests.|Tool|10|0
+simple_meal|Simple Meal|Basic prepared food for future survival tests.|Food|20|0
+workbench_kit|Workbench Kit|A packed workbench kit for later station tests.|Tool|1|0
+realm_anchor|Realm Anchor|A crude anchor of stabilized realm energy. It has no world function yet.|Tool|1|0
