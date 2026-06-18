@@ -395,3 +395,19 @@ Remaining deferred items:
 
 - A local interactive Windows playthrough is still recommended on a machine with CMake/build tools available.
 - Terrain, procedural generation, new biomes, new enemies, new content, full UI, settings, and input remapping remain deferred.
+
+## Stabilisation Pass 9 Result
+
+Attempted after Stabilisation Pass 8:
+
+- Confirmed `cmake` is not available on the normal PATH.
+- Found Visual Studio 2026's bundled CMake and compiler tools.
+- Confirmed the requested Visual Studio 2022 generator fails locally because the VS 2022 `v143` build tools are not installed.
+- Attempted Visual Studio 2026/Ninja local configuration from the Codex shell, but CMake configure repeatedly hung and no executable was produced.
+- Stopped the stuck `cmake`/`ninja` processes and documented the blocker in `Docs/QA/VerticalSliceReleaseCandidate.md`.
+
+Result:
+
+- Local interactive playthrough was not performed.
+- GitHub Actions remains the authoritative automated build/test gate.
+- A manual Windows playthrough is still required from a working Visual Studio/CMake developer environment.

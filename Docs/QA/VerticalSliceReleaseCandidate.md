@@ -87,3 +87,77 @@ One small guidance issue was found during inspection:
 ## Release-Candidate Readiness Result
 
 Ready for release-candidate review once GitHub Actions is green.
+
+## Stabilisation Pass 9 Local Verification Attempt
+
+Stabilisation Pass 9 attempted to perform the missing local Windows release-candidate playthrough.
+
+### Local Tooling Status
+
+`cmake` is not available on the normal PATH:
+
+```text
+where cmake
+INFO: Could not find files for the given pattern(s).
+
+cmake --version
+The term 'cmake' is not recognized as the name of a cmdlet, function, script file, or operable program.
+```
+
+The standard standalone CMake install path is also not present:
+
+```text
+C:\Program Files\CMake\bin\cmake.exe
+not recognized as a command
+```
+
+Visual Studio's bundled CMake was found:
+
+```text
+C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe
+cmake version 4.3.1-msvc1
+```
+
+The requested Visual Studio 2022 generator failed because the local machine does not have the VS 2022 `v143` build tools available:
+
+```text
+error MSB8020: The build tools for Visual Studio 2022 (Platform Toolset = 'v143') cannot be found.
+```
+
+The installed Visual Studio is Visual Studio 2026. Its developer environment exposes `cl.exe` and Ninja:
+
+```text
+Visual Studio 2026 Developer Command Prompt v18.7.1
+cl.exe: Version 19.51.36248 for x64
+ninja.exe found under Visual Studio's CMake/Ninja tools
+```
+
+However, attempts to configure a local Ninja build from the Codex shell repeatedly hung during CMake configure. Those stuck `cmake`/`ninja` processes were stopped manually. No local executable was produced.
+
+### Local Build/Test Result
+
+Local configure/build/test did not complete in this environment. The local app was not launched, and the interactive playthrough was not performed.
+
+GitHub Actions remains the authoritative build/test result for this repository until a normal local developer shell can run one of these successfully:
+
+```powershell
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Debug
+ctest --test-dir build -C Debug --output-on-failure
+```
+
+or, on this machine's installed Visual Studio 2026 toolchain:
+
+```powershell
+cmake -S . -B build-vs18 -G "Visual Studio 18 2026" -A x64
+cmake --build build-vs18 --config Debug
+ctest --test-dir build-vs18 -C Debug --output-on-failure
+```
+
+### Local Interactive Playthrough Result
+
+Not performed. The blocker is local toolchain/configure reliability from this shell, not a known project compile error.
+
+### Final Pass 9 Verdict
+
+Stabilisation Pass 9 does not certify the local interactive playthrough. It records the local tooling blocker exactly. The release candidate still requires a manual Windows playthrough from a working Visual Studio/CMake developer environment before it can be called locally verified.
