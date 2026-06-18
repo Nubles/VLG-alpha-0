@@ -114,6 +114,7 @@ std::vector<std::string> VerticalSliceHud::BuildTextLines(const HudState& state)
     std::vector<std::string> lines;
     lines.push_back("HP " + WholeNumber(state.health) + "/" + WholeNumber(state.maxHealth));
     lines.push_back("ST " + WholeNumber(state.stamina) + "/" + WholeNumber(state.maxStamina));
+    lines.push_back(state.mouseLookEnabled ? "MOUSE: ON" : "MOUSE: OFF");
     lines.push_back("TARGET: " + HudFormatter::TargetText(state));
     lines.push_back("OBJECTIVE: " + HudFormatter::ObjectiveText(state));
 
@@ -161,11 +162,13 @@ std::vector<rw::renderer::OverlayRect> VerticalSliceHud::BuildTextOverlay(
         margin, height - 18.0F, 2.0F, softWhite, 0.95F, 18);
 
     AppendText(rects, lines[2],
-        margin + 8.0F, margin + 8.0F, 2.0F, softWhite, 0.95F, 36);
+        margin + 8.0F, height - 104.0F, 2.0F, softWhite, 0.92F, 16);
     AppendText(rects, lines[3],
+        margin + 8.0F, margin + 8.0F, 2.0F, softWhite, 0.95F, 36);
+    AppendText(rects, lines[4],
         margin + 8.0F, margin + panelHeight + 16.0F, 2.0F, softWhite, 0.95F, 38);
 
-    std::size_t nextLine = 4;
+    std::size_t nextLine = 5;
     if (state.enemyHealth > 0.0F) {
         AppendText(rects,
             lines[nextLine],

@@ -17,6 +17,7 @@ void TestDebugSystems()
     assert(helpText.find("C attack") != std::string::npos);
     assert(helpText.find("O save") != std::string::npos);
     assert(helpText.find("P load") != std::string::npos);
+    assert(helpText.find("M toggle mouse look") != std::string::npos);
     assert(helpText.find("H help") != std::string::npos);
 
     rw::game::DebugMessageLog messageLog(3);
@@ -34,4 +35,3 @@ void TestDebugSystems()
     const rw::game::Inventory inventory(2);
     assert(rw::game::CompactInventorySummary(database, inventory) == "empty");
 }
-

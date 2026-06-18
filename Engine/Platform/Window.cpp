@@ -21,12 +21,75 @@ struct Window::Impl {
     bool open = false;
     int width = 0;
     int height = 0;
+    bool cursorHidden = false;
+    bool mouseCaptureWasEnabled = false;
     std::string className;
 };
 
 namespace {
 
 constexpr COLORREF kBlankColor = RGB(8, 10, 14);
+
+void SetCursorVisible(Window::Impl& impl, bool visible)
+{
+    if (visible && impl.cursorHidden) {
+        while (ShowCursor(TRUE) < 0) {
+        }
+        impl.cursorHidden = false;
+    } else if (!visible && !impl.cursorHidden) {
+        while (ShowCursor(FALSE) >= 0) {
+        }
+        impl.cursorHidden = true;
+    }
+}
+
+POINT ClientCenter(HWND window)
+{
+    RECT rect = {};
+    GetClientRect(window, &rect);
+    POINT point {
+        (rect.right - rect.left) / 2,
+        (rect.bottom - rect.top) / 2,
+    };
+    ClientToScreen(window, &point);
+    return point;
+}
+
+void UpdateMouseCapture(Window::Impl& impl, rw::input::InputState& input)
+{
+    POINT cursor = {};
+    GetCursorPos(&cursor);
+    POINT clientCursor = cursor;
+    ScreenToClient(impl.handle, &clientCursor);
+    input.SetMousePosition(clientCursor.x, clientCursor.y);
+
+    if (!input.MouseCaptureEnabled()) {
+        if (impl.mouseCaptureWasEnabled) {
+            ClipCursor(nullptr);
+            SetCursorVisible(impl, true);
+        }
+        impl.mouseCaptureWasEnabled = false;
+        return;
+    }
+
+    RECT clientRect = {};
+    GetClientRect(impl.handle, &clientRect);
+    POINT topLeft { clientRect.left, clientRect.top };
+    POINT bottomRight { clientRect.right, clientRect.bottom };
+    ClientToScreen(impl.handle, &topLeft);
+    ClientToScreen(impl.handle, &bottomRight);
+    RECT screenRect { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
+    ClipCursor(&screenRect);
+    SetCursorVisible(impl, false);
+
+    const POINT center = ClientCenter(impl.handle);
+    if (impl.mouseCaptureWasEnabled) {
+        input.AddMouseDelta(cursor.x - center.x, cursor.y - center.y);
+    }
+    SetCursorPos(center.x, center.y);
+    input.SetMousePosition(clientRect.right / 2, clientRect.bottom / 2);
+    impl.mouseCaptureWasEnabled = true;
+}
 
 std::wstring ToWide(const std::string& value)
 {
@@ -142,6 +205,8 @@ Window::Window(const WindowConfig& config)
 Window::~Window()
 {
     if (m_impl && m_impl->handle != nullptr) {
+        ClipCursor(nullptr);
+        SetCursorVisible(*m_impl, true);
         if (m_impl->deviceContext != nullptr) {
             ReleaseDC(m_impl->handle, m_impl->deviceContext);
             m_impl->deviceContext = nullptr;
@@ -208,12 +273,15 @@ void Window::PollEvents(rw::input::InputState& input)
     input.SetKeyDown(rw::input::Key::F11, (GetAsyncKeyState(VK_F11) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::F12, (GetAsyncKeyState(VK_F12) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::H, (GetAsyncKeyState('H') & 0x8000) != 0);
+    input.SetKeyDown(rw::input::Key::M, (GetAsyncKeyState('M') & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Up, (GetAsyncKeyState(VK_UP) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Down, (GetAsyncKeyState(VK_DOWN) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Left, (GetAsyncKeyState(VK_LEFT) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Right, (GetAsyncKeyState(VK_RIGHT) & 0x8000) != 0);
     input.SetKeyDown(rw::input::Key::Shift,
         (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0);
+
+    UpdateMouseCapture(*m_impl, input);
 }
 
 void Window::ClearBlankScreen()

@@ -15,22 +15,7 @@ void PlayerController::Update(float deltaSeconds, const rw::input::InputState& i
 {
     constexpr float walkSpeed = 3.0F;
     constexpr float sprintSpeed = 6.5F;
-    constexpr float lookSpeed = 1.8F;
-
-    if (input.IsKeyDown(rw::input::Key::Left)) {
-        m_camera.yawRadians += lookSpeed * deltaSeconds;
-    }
-    if (input.IsKeyDown(rw::input::Key::Right)) {
-        m_camera.yawRadians -= lookSpeed * deltaSeconds;
-    }
-    if (input.IsKeyDown(rw::input::Key::Up)) {
-        m_camera.pitchRadians += lookSpeed * deltaSeconds;
-    }
-    if (input.IsKeyDown(rw::input::Key::Down)) {
-        m_camera.pitchRadians -= lookSpeed * deltaSeconds;
-    }
-
-    m_camera.pitchRadians = std::clamp(m_camera.pitchRadians, -1.45F, 1.45F);
+    ApplyLookInput(deltaSeconds, input);
 
     const bool forward = input.IsKeyDown(rw::input::Key::W);
     const bool backward = input.IsKeyDown(rw::input::Key::S);
@@ -58,6 +43,32 @@ void PlayerController::Update(float deltaSeconds, const rw::input::InputState& i
     if (left) {
         m_camera.position -= planarRight * distance;
     }
+}
+
+void PlayerController::ApplyLookInput(float deltaSeconds, const rw::input::InputState& input)
+{
+    constexpr float keyboardLookSpeed = 1.8F;
+    constexpr float mouseSensitivity = 0.0025F;
+
+    if (input.IsKeyDown(rw::input::Key::Left)) {
+        m_camera.yawRadians += keyboardLookSpeed * deltaSeconds;
+    }
+    if (input.IsKeyDown(rw::input::Key::Right)) {
+        m_camera.yawRadians -= keyboardLookSpeed * deltaSeconds;
+    }
+    if (input.IsKeyDown(rw::input::Key::Up)) {
+        m_camera.pitchRadians += keyboardLookSpeed * deltaSeconds;
+    }
+    if (input.IsKeyDown(rw::input::Key::Down)) {
+        m_camera.pitchRadians -= keyboardLookSpeed * deltaSeconds;
+    }
+
+    if (input.MouseCaptureEnabled()) {
+        m_camera.yawRadians -= static_cast<float>(input.MouseDeltaX()) * mouseSensitivity;
+        m_camera.pitchRadians -= static_cast<float>(input.MouseDeltaY()) * mouseSensitivity;
+    }
+
+    m_camera.pitchRadians = std::clamp(m_camera.pitchRadians, -1.45F, 1.45F);
 }
 
 const rw::scene::Camera& PlayerController::Camera() const

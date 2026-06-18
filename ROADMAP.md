@@ -269,6 +269,32 @@ Exit criteria:
 - Existing vertical-slice controls and flow remain unchanged.
 - CI remains green.
 
+## Milestone 14: Mouse Look + Input Polish Foundation
+
+Goal: add a small mouse-look foundation without rewriting input or adding a settings system.
+
+Deliverables:
+
+- Mouse position and per-frame delta in `InputState`.
+- Optional mouse capture flag.
+- Win32 cursor hide, clip, and recenter behavior while mouse look is enabled.
+- `M` toggle for mouse look.
+- Mouse yaw/pitch camera control in `PlayerController`.
+- Arrow-key look fallback preserved.
+- HUD/title/help text updated with mouse-look state/control.
+- Pure tests for mouse input and player look behavior.
+- Documentation.
+
+Exit criteria:
+
+- App opens with mouse look off by default.
+- Arrow-key look still works.
+- Pressing `M` toggles mouse look.
+- Mouse delta changes camera yaw/pitch while enabled.
+- Pitch remains clamped.
+- Existing vertical-slice controls and flow remain unchanged.
+- CI remains green.
+
 ## Post-Vertical-Slice Stabilisation
 
 Milestones 0-11 have produced the first playable debug vertical slice. Before adding another major gameplay milestone, the project should stabilise the current slice so future systems do not pile onto fragile integration code.

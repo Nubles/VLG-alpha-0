@@ -28,8 +28,9 @@ SandboxGame::SandboxGame()
     LoadMistwoodHollow();
 }
 
-void SandboxGame::OnUpdate(float deltaSeconds, const rw::input::InputState& input)
+void SandboxGame::OnUpdate(float deltaSeconds, rw::input::InputState& input)
 {
+    UpdateMouseLook(input);
     m_player.Update(deltaSeconds, input);
     UpdateInteractionTarget(input);
     UpdateDebugItemGrants(input);
@@ -58,6 +59,8 @@ std::string SandboxGame::DebugTitle() const
          << " | enemy " << ToString(m_realmWisp.state)
          << " " << std::setprecision(0) << m_realmWisp.health.Health()
          << " | obj " << ObjectiveStatus();
+
+    text << " | mouse " << (m_playerMouseLookEnabled ? "on" : "off");
 
     if (m_buildPlacement.BuildModeActive()) {
         text << " | build " << SelectedBuildableName();
@@ -292,6 +295,19 @@ void SandboxGame::UpdateDebugHelp(const rw::input::InputState& input)
     }
 }
 
+void SandboxGame::UpdateMouseLook(rw::input::InputState& input)
+{
+    if (!input.WasKeyPressed(rw::input::Key::M)) {
+        input.SetMouseCaptureEnabled(m_playerMouseLookEnabled);
+        return;
+    }
+
+    m_playerMouseLookEnabled = !m_playerMouseLookEnabled;
+    input.SetMouseCaptureEnabled(m_playerMouseLookEnabled);
+    m_lastInputMessage = m_playerMouseLookEnabled ? "Mouse look enabled" : "Mouse look disabled";
+    PushDebugMessage(m_lastInputMessage);
+}
+
 void SandboxGame::GatherTargetNode(GatherableNode& node)
 {
     const GatheringResult result = node.Gather(m_itemDatabase, m_inventory);
@@ -494,6 +510,7 @@ HudState SandboxGame::BuildHudState() const
     state.selectedBuildableName = SelectedBuildableName();
     state.messages = m_messages.Messages();
     state.saveLoadMessage = m_lastSaveMessage;
+    state.mouseLookEnabled = m_playerMouseLookEnabled;
     return state;
 }
 

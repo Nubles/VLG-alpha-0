@@ -349,3 +349,20 @@ Remaining deferred items:
 
 - Real font rendering, UI layout, inventory grids, mouse interaction, drag/drop, menus, and settings screens remain deferred.
 - Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.
+
+## Milestone 14 Result
+
+Completed after Milestone 13:
+
+- Added mouse position, per-frame mouse delta, and mouse capture state to `InputState`.
+- Added Win32 mouse capture behavior for the current custom window: hide cursor, clip to the client area, recenter each frame, and release when disabled.
+- Added `M` as a mouse-look toggle while keeping arrow-key look as fallback.
+- Updated `PlayerController` to apply mouse delta to yaw/pitch when capture is enabled and keep pitch clamped.
+- Updated HUD/title/help documentation to show mouse-look state/control.
+- Added pure tests for input mouse state, player look changes, zero-delta behavior, arrow fallback, and pitch clamp.
+- Added `Docs/Systems/MouseLookInput.md`.
+
+Remaining deferred items:
+
+- Settings menu, sensitivity UI, key rebinding, full action mapping, controller support, mouse UI interaction, and drag/drop remain deferred.
+- Do not begin terrain, procedural generation, new biomes, new enemies, or content expansion until this milestone is reviewed and green.

@@ -7,6 +7,7 @@
 #include "Game/Source/Combat/PlayerCombat.h"
 #include "Game/Source/Inventory/Inventory.h"
 #include "Game/Source/Items/ItemDatabase.h"
+#include "Game/Source/PlayerController.h"
 #include "Game/Source/PlayerVitals.h"
 
 #include <cassert>
@@ -34,6 +35,37 @@ void TestCombatAndVitals()
     assert(rw::game::EnemyBrain::Evaluate(true, 9.0F, 8.0F, 1.5F) == rw::game::EnemyState::Idle);
     assert(rw::game::EnemyBrain::Evaluate(true, 1.0F, 8.0F, 1.5F) == rw::game::EnemyState::Attack);
     assert(rw::game::EnemyBrain::Evaluate(false, 1.0F, 8.0F, 1.5F) == rw::game::EnemyState::Dead);
+
+    rw::game::PlayerController player;
+    const float startYaw = player.Camera().yawRadians;
+    const float startPitch = player.Camera().pitchRadians;
+
+    rw::input::InputState mouseInput;
+    mouseInput.SetMouseCaptureEnabled(true);
+    mouseInput.AddMouseDelta(20, -10);
+    player.ApplyLookInput(0.0F, mouseInput);
+    assert(player.Camera().yawRadians < startYaw);
+    assert(player.Camera().pitchRadians > startPitch);
+
+    const float mouseYaw = player.Camera().yawRadians;
+    const float mousePitch = player.Camera().pitchRadians;
+    rw::input::InputState zeroMouseInput;
+    zeroMouseInput.SetMouseCaptureEnabled(true);
+    player.ApplyLookInput(0.0F, zeroMouseInput);
+    assert(player.Camera().yawRadians == mouseYaw);
+    assert(player.Camera().pitchRadians == mousePitch);
+
+    rw::input::InputState arrowInput;
+    arrowInput.SetKeyDown(rw::input::Key::Left, true);
+    player.ApplyLookInput(1.0F, arrowInput);
+    assert(player.Camera().yawRadians > mouseYaw);
+
+    player.SetLook(0.0F, 0.0F);
+    rw::input::InputState clampInput;
+    clampInput.SetMouseCaptureEnabled(true);
+    clampInput.AddMouseDelta(0, -10000);
+    player.ApplyLookInput(0.0F, clampInput);
+    assert(player.Camera().pitchRadians <= 1.45F);
 
     rw::scene::Camera combatCamera;
     combatCamera.position = { 0.0F, 0.0F, 0.0F };
@@ -81,4 +113,3 @@ void TestCombatAndVitals()
     assert(!lootResult.drops.empty());
     assert(lootInventory.TotalQuantity("fiber") == 1);
 }
-

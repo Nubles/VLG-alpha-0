@@ -37,6 +37,22 @@ int main()
     assert(input.WasKeyPressed(rw::input::Key::E));
     input.SetKeyDown(rw::input::Key::E, true);
     assert(!input.WasKeyPressed(rw::input::Key::E));
+    input.SetKeyDown(rw::input::Key::M, true);
+    assert(input.WasKeyPressed(rw::input::Key::M));
+
+    input.SetMousePosition(100, 200);
+    assert(input.MouseX() == 100);
+    assert(input.MouseY() == 200);
+    input.AddMouseDelta(5, -3);
+    input.AddMouseDelta(2, 4);
+    assert(input.MouseDeltaX() == 7);
+    assert(input.MouseDeltaY() == 1);
+    input.SetMouseCaptureEnabled(true);
+    assert(input.MouseCaptureEnabled());
+    input.BeginFrame();
+    assert(input.MouseDeltaX() == 0);
+    assert(input.MouseDeltaY() == 0);
+    assert(input.MouseCaptureEnabled());
 
     const rw::math::Vec3 a { 1.0F, 2.0F, 3.0F };
     const rw::math::Vec3 b { 2.0F, 0.0F, 1.0F };

@@ -13,6 +13,7 @@ The current vertical slice includes:
 - Win32/WGL fixed-function OpenGL renderer
 - Mistwood Hollow handcrafted biome
 - player movement, stamina, and interaction
+- mouse-look toggle with arrow-key fallback
 - inventory and hotbar logic
 - resource gathering
 - crafting
@@ -117,6 +118,7 @@ The path is relative to the process working directory. During normal local runs 
 - [Vertical slice polish](Docs/Systems/VerticalSlicePolish.md)
 - [UI/HUD foundation](Docs/Systems/UIHudFoundation.md)
 - [Debug text overlay](Docs/Systems/DebugTextOverlay.md)
+- [Mouse look input](Docs/Systems/MouseLookInput.md)
 - [Data loading: items](Docs/Systems/DataLoadingItems.md)
 - [Data loading: recipes](Docs/Systems/DataLoadingRecipes.md)
 - [Data loading: buildables](Docs/Systems/DataLoadingBuildables.md)
@@ -127,6 +129,6 @@ The path is relative to the process working directory. During normal local runs 
 Do not jump straight into terrain or procedural generation. The best next decision is either:
 
 - another deliberate architecture pass to keep the current vertical slice maintainable.
-- a scoped text/UI planning pass before real fonts, inventory grids, mouse interaction, or final HUD behavior.
+- a scoped input/settings planning pass before key rebinding, sensitivity UI, controller support, or mouse-driven UI.
 
 Choose the next milestone only after onboarding docs and CI are current and green.

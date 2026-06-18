@@ -11,6 +11,7 @@ public:
     PlayerController();
 
     void Update(float deltaSeconds, const rw::input::InputState& input);
+    void ApplyLookInput(float deltaSeconds, const rw::input::InputState& input);
 
     const rw::scene::Camera& Camera() const;
     void SetPosition(const rw::math::Vec3& position);

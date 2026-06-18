@@ -18,6 +18,7 @@ struct HudState {
     std::string enemyState;
     std::string objectiveStatus;
     bool buildModeActive = false;
+    bool mouseLookEnabled = false;
     std::string selectedBuildableName = "None";
     std::vector<std::string> messages;
     std::string saveLoadMessage;

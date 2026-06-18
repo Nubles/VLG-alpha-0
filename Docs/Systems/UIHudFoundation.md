@@ -64,7 +64,8 @@ No gameplay controls changed in this milestone.
 Existing relevant controls:
 
 - `WASD`: move
-- `Arrow keys`: look
+- `Arrow keys`: look fallback
+- `M`: toggle mouse look
 - `Shift`: sprint
 - `E`: interact/gather/objective
 - `C`: attack

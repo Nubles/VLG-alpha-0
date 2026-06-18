@@ -31,7 +31,7 @@ class SandboxGame final : public rw::core::GameLayer {
 public:
     SandboxGame();
 
-    void OnUpdate(float deltaSeconds, const rw::input::InputState& input) override;
+    void OnUpdate(float deltaSeconds, rw::input::InputState& input) override;
     void OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window) override;
     std::string DebugTitle() const override;
 
@@ -43,6 +43,7 @@ private:
     void UpdateCombatAndEnemies(float deltaSeconds, const rw::input::InputState& input);
     void UpdateSaveLoad(const rw::input::InputState& input);
     void UpdateDebugHelp(const rw::input::InputState& input);
+    void UpdateMouseLook(rw::input::InputState& input);
     void GrantDebugItem(const std::string& itemId, int quantity);
     void CraftDebugRecipe(const std::string& recipeId);
     void InteractWithRealmFracture();
@@ -80,6 +81,7 @@ private:
     Inventory m_inventory;
     Hotbar m_hotbar;
     VerticalSliceHud m_hud;
+    bool m_playerMouseLookEnabled = false;
     std::vector<Interactable> m_interactables;
     std::vector<GatherableNode> m_gatherableNodes;
     EnemyAgent m_realmWisp;
@@ -93,6 +95,7 @@ private:
     std::string m_lastCombatMessage;
     std::string m_lastProgressionMessage;
     std::string m_lastSaveMessage;
+    std::string m_lastInputMessage;
 };
 
 } // namespace rw::game

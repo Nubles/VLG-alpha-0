@@ -5,7 +5,8 @@ Milestone 11 tightens the current Realmbound Wilds vertical slice without adding
 ## Controls
 
 - WASD: move
-- Arrow keys: look
+- Arrow keys: look fallback
+- M: toggle mouse look
 - Shift: sprint
 - E: interact, gather, or progress the Realm Fracture objective
 - C: melee attack
@@ -63,7 +64,7 @@ The window title is intentionally compact and debug-oriented. It is not final UI
 ## Known Limitations
 
 - No final HUD or menu UI.
-- No mouse-look.
+- Mouse-look is now handled by Milestone 14; this milestone originally shipped before that input polish pass.
 - No terrain mesh, terrain chunks, or procedural generation.
 - No textures, models, or asset loading.
 - No audio or polished VFX.

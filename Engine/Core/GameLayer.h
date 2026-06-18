@@ -10,7 +10,7 @@ namespace rw::core {
 class GameLayer {
 public:
     virtual ~GameLayer() = default;
-    virtual void OnUpdate(float deltaSeconds, const rw::input::InputState& input) = 0;
+    virtual void OnUpdate(float deltaSeconds, rw::input::InputState& input) = 0;
     virtual void OnRender(rw::renderer::Renderer& renderer, rw::platform::Window& window) = 0;
     virtual std::string DebugTitle() const;
 };

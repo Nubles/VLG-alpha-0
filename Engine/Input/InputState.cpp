@@ -8,6 +8,8 @@ void InputState::BeginFrame()
     for (bool& pressed : m_pressed) {
         pressed = false;
     }
+    m_mouseDeltaX = 0;
+    m_mouseDeltaY = 0;
 }
 
 void InputState::RequestQuit()
@@ -49,6 +51,48 @@ bool InputState::IsKeyDown(Key key) const
 bool InputState::WasKeyPressed(Key key) const
 {
     return m_pressed[static_cast<int>(key)];
+}
+
+void InputState::SetMousePosition(int x, int y)
+{
+    m_mouseX = x;
+    m_mouseY = y;
+}
+
+int InputState::MouseX() const
+{
+    return m_mouseX;
+}
+
+int InputState::MouseY() const
+{
+    return m_mouseY;
+}
+
+void InputState::AddMouseDelta(int deltaX, int deltaY)
+{
+    m_mouseDeltaX += deltaX;
+    m_mouseDeltaY += deltaY;
+}
+
+int InputState::MouseDeltaX() const
+{
+    return m_mouseDeltaX;
+}
+
+int InputState::MouseDeltaY() const
+{
+    return m_mouseDeltaY;
+}
+
+void InputState::SetMouseCaptureEnabled(bool enabled)
+{
+    m_mouseCaptureEnabled = enabled;
+}
+
+bool InputState::MouseCaptureEnabled() const
+{
+    return m_mouseCaptureEnabled;
 }
 
 } // namespace rw::input

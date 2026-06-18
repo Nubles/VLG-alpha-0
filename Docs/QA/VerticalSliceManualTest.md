@@ -31,7 +31,8 @@ ctest --test-dir build -C Debug --output-on-failure
 ## Controls
 
 - `WASD`: move
-- `Arrow keys`: look
+- `Arrow keys`: look fallback
+- `M`: toggle mouse look
 - `Shift`: sprint
 - `E`: interact, gather, or complete objective
 - `C`: attack
@@ -62,26 +63,27 @@ ctest --test-dir build -C Debug --output-on-failure
 
 1. Launch the app.
 2. Press `H` and confirm the help/debug message appears.
-3. Gather basic resources from branch, stone, and fiber nodes using `E`.
-4. Craft `primitive_tool`.
-5. Gather `Cracked Rock`; it should require `primitive_tool`.
-6. Craft `camp_bundle` and `workbench_kit`.
-7. Enter build mode with `B`.
-8. Select/place `camp_marker`.
-9. Select/place `workbench_stub`.
-10. Fight the `Realm Wisp` with `C` until defeated.
-11. Interact with the `Realm Fracture`.
-12. If requirements are missing, confirm the message lists `camp_bundle x1 consumed`, `fiber x3 consumed`, `primitive_tool x1 required, kept`, and exact missing amounts.
-13. Stabilise the `Realm Fracture`.
-14. Craft `realm_anchor`.
-15. Press `O` to save.
-16. Change state: move, rotate the camera, gather or place something if available.
-17. Press `P` to load.
-18. Verify restored player position, camera view direction, inventory, placed buildables, depleted gatherables, fracture state, and Realm Wisp state.
+3. Press `M`, move the mouse, and confirm the camera turns. Press `M` again and confirm arrow-key look still works.
+4. Gather basic resources from branch, stone, and fiber nodes using `E`.
+5. Craft `primitive_tool`.
+6. Gather `Cracked Rock`; it should require `primitive_tool`.
+7. Craft `camp_bundle` and `workbench_kit`.
+8. Enter build mode with `B`.
+9. Select/place `camp_marker`.
+10. Select/place `workbench_stub`.
+11. Fight the `Realm Wisp` with `C` until defeated.
+12. Interact with the `Realm Fracture`.
+13. If requirements are missing, confirm the message lists `camp_bundle x1 consumed`, `fiber x3 consumed`, `primitive_tool x1 required, kept`, and exact missing amounts.
+14. Stabilise the `Realm Fracture`.
+15. Craft `realm_anchor`.
+16. Press `O` to save.
+17. Change state: move, rotate the camera, gather or place something if available.
+18. Press `P` to load.
+19. Verify restored player position, camera view direction, inventory, placed buildables, depleted gatherables, fracture state, and Realm Wisp state.
 
 ## Expected Debug Messages
 
-- Help text includes movement, interaction, combat, build, save, load, and exit controls.
+- Help text includes movement, mouse look, interaction, combat, build, save, load, and exit controls.
 - Gathering success names the gathered object or resource result.
 - Missing gathering tool feedback names the missing tool.
 - Failed fracture interaction lists all objective requirements and exact missing items.
@@ -105,6 +107,7 @@ ctest --test-dir build -C Debug --output-on-failure
 - There is no terrain generation, procedural world, audio, VFX, full UI system, or multiplayer.
 - Items, recipes, and buildables load from simple text data files; biome layouts, drop tables, objectives, and enemy definitions remain code-defined.
 - Build placement, combat, and interaction use simple prototype checks.
+- Mouse sensitivity is hardcoded for now; there is no settings UI or input rebinding yet.
 
 ## What To Report If It Fails
 
