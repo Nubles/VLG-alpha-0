@@ -102,10 +102,10 @@ ctest --test-dir build -C Debug --output-on-failure
 - This is a debug prototype, not final UI.
 - Objective feedback is text/debug output only.
 - Save/load uses the current prototype serializer.
-- There is no terrain generation, procedural world, audio, VFX, real HUD, data loading, or multiplayer.
+- There is no terrain generation, procedural world, audio, VFX, real HUD, or multiplayer.
+- Items, recipes, and buildables load from simple text data files; biome layouts, drop tables, objectives, and enemy definitions remain code-defined.
 - Build placement, combat, and interaction use simple prototype checks.
 
 ## What To Report If It Fails
 
 Include the commit hash, build configuration, exact action taken, expected result, actual debug message, whether the issue happens before or after save/load, and a screenshot if rendering or debug overlay output looks wrong.
-

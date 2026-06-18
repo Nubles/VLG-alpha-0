@@ -301,3 +301,19 @@ Remaining deferred items:
 
 - Keep biome layouts, drops, and objectives code-defined until their own scoped passes.
 - Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
+
+## Stabilisation Pass 7 Result
+
+Completed after this review:
+
+- Updated `README.md` so it describes the current debug vertical slice instead of the original foundation-only repository state.
+- Added `Docs/Development/DeveloperSetup.md` with Windows prerequisites, Visual Studio/CMake expectations, configure/build/run/test commands, output paths, data-copy behavior, save location, and common local setup issues.
+- Added `Docs/Development/GitHubActions.md` describing the `Windows Build` workflow, what it verifies, how to inspect failures, build log artifact expectations, and what information to include when reporting CI failures.
+- Added `Docs/Development/CurrentProjectState.md` summarising completed milestones, stabilisation passes, current data-loaded definitions, still code-defined content, known limitations, and the recommended next decision.
+- Kept the pass documentation-only aside from correcting stale docs that contradicted the current save/load and data-loading state.
+
+Remaining deferred items:
+
+- Do not begin UI/HUD foundation until this onboarding pass is reviewed and CI is green.
+- Biome layouts, drop tables, objectives, and enemy definitions remain code-defined until scoped future passes.
+- Do not begin terrain, procedural generation, renderer rewrite, audio/VFX, multiplayer, or new gameplay systems yet.

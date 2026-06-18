@@ -251,13 +251,14 @@ Completed stabilisation notes:
 - Item, recipe, and buildable data loading now share small parser helpers in `Game/Source/Data`.
 - Biome layout, drop table, and objective data loading remain deferred.
 
-Primary next direction: stabilise the current vertical slice first.
+Primary next direction: finish the current stabilisation documentation handoff, then choose the next major phase deliberately.
 
 Next milestone options after stabilisation:
 
-- Real data loading for items, recipes, and buildables.
 - Renderer/debug visual improvements.
 - Proper UI/HUD foundation.
 - Terrain/world foundation.
 - Second biome/progression chain.
 - Enemy/combat expansion.
+
+Before choosing one of those options, keep onboarding, README, CI, and current-state documentation accurate. Item, recipe, and buildable data loading are complete. Shared parser helpers for those data-loading paths are complete. Biome layout, drop table, and objective data loading remain deferred until their own scoped pass.

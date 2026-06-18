@@ -31,11 +31,14 @@ Example:
 version=1
 biome=mistwood_hollow
 player.position=0,1.8,6
+player.yaw=3.14159
+player.pitch=-0.18
 player.health=100
 player.stamina=85
 inventory.slot.0=wood,12
 progression.flag=mistwood_fracture_discovered
-buildable.0=camp_marker,1,0,2,0
+buildable.0=placed_0001,camp_marker,1,0,2,0
+gatherable.depleted=mistwood_branch_01
 objective.completed=true
 fracture.stabilized=true
 enemy.realm_wisp.alive=false
@@ -51,17 +54,19 @@ Persisted now:
 - save version
 - current biome ID
 - player position
+- player camera yaw and pitch
 - player health
 - player stamina
 - inventory slots
 - progression flags
-- placed buildables
+- placed buildables with instance IDs
+- depleted gatherable IDs
 - Mistwood objective completion state
 - Realm Fracture stabilized state
 - Realm Wisp alive/dead state
 - Realm Wisp position
 
-Gatherable depletion is not persisted yet. It needs stable node IDs before it can be restored cleanly.
+Gatherable depletion is persisted through stable gatherable IDs from the handcrafted biome layout.
 
 ## Debug Controls
 
@@ -78,7 +83,7 @@ Existing controls remain unchanged.
 - No binary compression or encryption.
 - No procedural world, terrain chunk, or future-system persistence.
 - Loading assumes the current handcrafted biome layout exists.
-- Depleted gatherable nodes are not restored yet.
+- Save/load is still tied to the current handcrafted biome layout.
 
 ## Not Implemented Yet
 
