@@ -1,0 +1,7 @@
+# id|display_name|output_item_id|output_quantity|required_station_id|required_unlock_flag|ingredients
+
+primitive_tool|Primitive Tool|primitive_tool|1|||wood:1,stone:1,fiber:1
+camp_bundle|Camp Bundle|camp_bundle|1|||wood:5,fiber:3
+simple_meal|Simple Meal|simple_meal|1|||raw_food:2,fiber:1
+workbench_kit|Workbench Kit|workbench_kit|1|||wood:10,stone:4
+realm_anchor|Realm Anchor|realm_anchor|1||recipe_realm_anchor_unlocked|workbench_kit:1,fiber:5,stone:5

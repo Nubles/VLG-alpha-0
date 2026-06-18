@@ -246,7 +246,8 @@ Recommended cleanup order:
 Completed stabilisation notes:
 
 - Item definitions now load from `Game/Data/Items/items.txt` with a hardcoded fallback.
-- Recipe data loading is the next smallest data-loading pass.
+- Recipe definitions now load from `Game/Data/Recipes/recipes.txt` with a hardcoded fallback.
+- Buildable definition data loading is the next smallest data-loading pass.
 
 Primary next direction: stabilise the current vertical slice first.
 

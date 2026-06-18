@@ -249,3 +249,21 @@ Remaining deferred items:
 - Move recipes to data only after this item-loading pass is reviewed.
 - Keep buildables, biome layouts, drops, and objectives code-defined until their own scoped passes.
 - Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
+
+## Stabilisation Pass 4 Result
+
+Completed after this review:
+
+- Added `Game/Data/Recipes/recipes.txt` as a pipe-delimited recipe definition file mirroring the existing starter recipes.
+- Added a tiny dependency-free recipe parser with validation for field count, required fields, positive output quantity, ingredient syntax, and positive ingredient quantities.
+- Added `RecipeDatabase::LoadFromText`, `LoadFromFile`, and `CreateFromFileOrFallback`.
+- Updated runtime recipe database construction to load recipe definitions from data first and fall back to hardcoded definitions with a warning.
+- Preserved the `recipe_realm_anchor_unlocked` progression gate for `realm_anchor`.
+- Added recipe parser coverage to the crafting/domain tests while preserving existing crafting, gathering, building, objective, inventory, and save/load behavior.
+- Added `Docs/Systems/DataLoadingRecipes.md`.
+
+Remaining deferred items:
+
+- Move buildables to data only after this recipe-loading pass is reviewed.
+- Keep biome layouts, drops, and objectives code-defined until their own scoped passes.
+- Do not begin terrain, procedural generation, renderer rewrite, real UI/HUD, or new gameplay systems yet.
